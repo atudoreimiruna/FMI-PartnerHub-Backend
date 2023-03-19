@@ -1,6 +1,6 @@
-﻿using Licenta.Core.Extensions.PagedList;
+﻿using Licenta.Core.Extensions;
+using Licenta.Core.Extensions.PagedList;
 using Licenta.Core.Interfaces;
-using Recruitment.Core.Extensions;
 
 namespace Licenta.Infrastructure.Repository;
 
@@ -11,6 +11,11 @@ public class Repository<T> : IRepository<T> where T : class
     public Repository(AppDbContext context)
     {
         _context = context;
+    }
+
+    public IQueryable<T> AsQueryable()
+    {
+        return _context.Set<T>().AsQueryable();
     }
 
     public async Task<T?> FindByIdAsync(params object[] pkValues)

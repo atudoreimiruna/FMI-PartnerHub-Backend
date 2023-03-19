@@ -11,7 +11,8 @@ public class PartnerConfiguration : IEntityTypeConfiguration<Partner>
     {
         builder
             .Property(x => x.Name)
-            .HasMaxLength(50);
+            .HasMaxLength(50)
+            .IsRequired();
 
         builder
             .Property(x => x.Description)

@@ -12,44 +12,47 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Licenta.Infrastructure;
-using Licenta.Services.Interfaces;
-using Licenta.Services.Managers;
-using Licenta.Services.Helpers;
 using Licenta.Infrastructure.Seeders;
 using Licenta.Core.Entities;
 using AutoMapper;
 using Licenta.Services.AutoMapper;
-using System.Data;
 
 namespace Licenta.Api;
 
 public class Startup
 {
     public string SpecificOrigins = "_allowSpecificOrigins";
+
     public Startup(IConfiguration configuration)
     {
         Configuration = configuration;
     }
 
     public IConfiguration Configuration { get; }
-
     public void ConfigureServices(IServiceCollection services)
     {
 
         services.AddCors(options =>
         {
             options.AddPolicy(name: SpecificOrigins,
-                              builder =>
-                              {
-                                  builder.WithOrigins("localhost:4200", "http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
-                              });
+                builder =>
+                {
+                    builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                });
         });
 
-        services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
-        services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnString")));
-        services.AddTransient<IAuthManager, AuthManager>();
-        services.AddTransient<ITokenHelper, TokenHelper>();
-        services.AddTransient<DataSeeder>();
+        services
+            .AddControllers()
+            .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
+        string _connString = Configuration.GetConnectionString("ConnString");
+
+        services.AddDbContext<AppDbContext>(options =>
+        {
+            options.UseMySql(_connString, ServerVersion.AutoDetect(_connString));
+        });
+
+        services.AddServices();
 
         services.AddSwaggerGen(c =>
         {

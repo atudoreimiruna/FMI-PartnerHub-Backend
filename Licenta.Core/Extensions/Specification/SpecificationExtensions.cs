@@ -3,7 +3,7 @@ using Licenta.Core.Interfaces;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Recruitment.Core.Extensions;
+namespace Licenta.Core.Extensions;
 
 public class SpecificationExtensions<T>
 {
