@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Licenta.Core.Entities;
 using Licenta.Infrastructure;
-using Licenta.Services.DTOs;
 using System.Threading.Tasks;
+using Licenta.Services.DTOs.Feedback;
 
 namespace Licenta.Api.Controllers;
 
@@ -19,7 +19,7 @@ public class FeedbackController : ControllerBase
 
 
     [HttpPost("fromBody")]
-    public async Task<IActionResult> Create(FeedbackPostModel model)
+    public async Task<IActionResult> Create(FeedbackPostDTO model)
     {
         if (string.IsNullOrEmpty(model.Name))
         {

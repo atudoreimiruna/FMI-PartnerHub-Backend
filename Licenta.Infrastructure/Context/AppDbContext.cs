@@ -9,12 +9,12 @@ namespace Licenta.Infrastructure;
 public class AppDbContext : IdentityDbContext<
     User,
     Role,
-    int,
-    IdentityUserClaim<int>,
+    long,
+    IdentityUserClaim<long>,
     UserRole,
-    IdentityUserLogin<int>,
-    IdentityRoleClaim<int>,
-    IdentityUserToken<int>>
+    IdentityUserLogin<long>,
+    IdentityRoleClaim<long>,
+    IdentityUserToken<long>>
 
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
@@ -33,5 +33,4 @@ public class AppDbContext : IdentityDbContext<
         modelBuilder.ApplyConfiguration(new FeedbackConfiguration());
         modelBuilder.ApplyConfiguration(new PartnerConfiguration());
     }
-    
 }

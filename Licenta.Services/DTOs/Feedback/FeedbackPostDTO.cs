@@ -1,6 +1,6 @@
-﻿namespace Licenta.Services.DTOs;
+﻿namespace Licenta.Services.DTOs.Feedback;
 
-public class FeedbackPostModel
+public class FeedbackPostDTO
 {
     public int Id { get; set; }
     public string Name { get; set; }
