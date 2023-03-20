@@ -26,6 +26,12 @@ public class PartnerConfiguration : IEntityTypeConfiguration<Partner>
             .Property(x => x.Contact)
             .HasMaxLength(100);
 
+        builder
+            .HasMany(c => c.Posts)
+            .WithOne(n => n.Partner)
+            .HasForeignKey(n => n.PartnerId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         builder.HasData
         (
             new Partner

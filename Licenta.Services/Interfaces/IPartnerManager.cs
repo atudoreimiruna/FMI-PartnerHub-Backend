@@ -7,6 +7,7 @@ namespace Licenta.Services.Interfaces;
 
 public interface IPartnerManager
 {
+    Task<PartnerViewDTO> AddAsync(PartnerPostDTO partnerDto);
     Task<PagedList<PartnerViewDTO>> ListPartnersAsync(PartnerParameters parameters);
     Task<PartnerViewDTO> GetPartnerProfileByIdAsync(long id);
     Task<PartnerViewDTO> UpdateAsync(PartnerPutDTO partnerDto);

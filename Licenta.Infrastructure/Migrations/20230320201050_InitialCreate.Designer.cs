@@ -3,6 +3,7 @@ using System;
 using Licenta.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Licenta.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230320201050_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,12 +53,7 @@ namespace Licenta.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("longtext");
 
-                    b.Property<long?>("PostId")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("PostId");
 
                     b.ToTable("Images");
                 });
@@ -139,7 +137,7 @@ namespace Licenta.Infrastructure.Migrations
                         .HasMaxLength(5000)
                         .HasColumnType("varchar(5000)");
 
-                    b.Property<long?>("PartnerId")
+                    b.Property<long>("PartnerId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Title")
@@ -380,22 +378,13 @@ namespace Licenta.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Licenta.Core.Entities.Image", b =>
-                {
-                    b.HasOne("Licenta.Core.Entities.Post", "Post")
-                        .WithMany("Images")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Post");
-                });
-
             modelBuilder.Entity("Licenta.Core.Entities.Post", b =>
                 {
                     b.HasOne("Licenta.Core.Entities.Partner", "Partner")
                         .WithMany("Posts")
                         .HasForeignKey("PartnerId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Partner");
                 });
@@ -466,11 +455,6 @@ namespace Licenta.Infrastructure.Migrations
             modelBuilder.Entity("Licenta.Core.Entities.Partner", b =>
                 {
                     b.Navigation("Posts");
-                });
-
-            modelBuilder.Entity("Licenta.Core.Entities.Post", b =>
-                {
-                    b.Navigation("Images");
                 });
 
             modelBuilder.Entity("Licenta.Core.Entities.Role", b =>

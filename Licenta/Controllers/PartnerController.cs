@@ -16,6 +16,13 @@ public class PartnerController : ControllerBase
         _partnerManager = partnerManager;
     }
 
+    [HttpPost]
+    public async Task<IActionResult> AddPartner([FromBody] PartnerPostDTO partnerDto)
+    {
+        var partner = await _partnerManager.AddAsync(partnerDto);
+        return Ok(partner);
+    }
+
     [HttpGet("partners")]
     public async Task<IActionResult> ListPartners([FromQuery] PartnerParameters parameters)
     {

@@ -24,6 +24,8 @@ public class AppDbContext : IdentityDbContext<
     public DbSet<Newsletter> Newsletters { get; set; } 
     public DbSet<Feedback> Feedbacks { get; set; }
     public DbSet<Partner> Partners { get; set; }
+    public DbSet<Post> Posts { get; set; }
+    public DbSet<Image> Images { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -32,5 +34,7 @@ public class AppDbContext : IdentityDbContext<
         modelBuilder.ApplyConfiguration(new NewsLetterConfiguration());
         modelBuilder.ApplyConfiguration(new FeedbackConfiguration());
         modelBuilder.ApplyConfiguration(new PartnerConfiguration());
+        modelBuilder.ApplyConfiguration(new PostConfiguration());
+        modelBuilder.ApplyConfiguration(new ImageConfiguration());
     }
 }

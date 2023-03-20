@@ -26,6 +26,15 @@ public class PartnerManager : IPartnerManager
         _mapper = mapper;
     }
 
+    public async Task<PartnerViewDTO> AddAsync(PartnerPostDTO partnerDto)
+    {
+        var partner = _mapper.Map<Partner>(partnerDto);
+
+        await _partnerRepository.AddAsync(partner);
+
+        return _mapper.Map<PartnerViewDTO>(partner);
+    }
+
     public async Task<PagedList<PartnerViewDTO>> ListPartnersAsync(PartnerParameters parameters)
     {
         var spec = new PartnerSpecification(parameters);

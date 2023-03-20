@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Licenta.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230319180548_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230320202825_ImageTableConfig")]
+    partial class ImageTableConfig
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,6 +39,28 @@ namespace Licenta.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Feedbacks");
+                });
+
+            modelBuilder.Entity("Licenta.Core.Entities.Image", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    b.Property<byte[]>("Content")
+                        .HasColumnType("longblob");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext");
+
+                    b.Property<long?>("PostId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("Licenta.Core.Entities.Newsletter", b =>
@@ -107,6 +129,53 @@ namespace Licenta.Infrastructure.Migrations
                             Contact = "Phone: 0775345243",
                             Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut quam imperdiet, ullamcorper ex non, efficitur nisi. Aliquam erat volutpat. Nullam et luctus dui, a porttitor lacus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque et cursus erat. Nullam cursus consequat leo, a laoreet lectus convallis nec. Maecenas eget felis neque. Morbi lacinia neque id sapien dapibus, ac gravida neque pulvinar. Pellentesque rhoncus eu augue a pretium.",
                             Name = "Partner 3"
+                        });
+                });
+
+            modelBuilder.Entity("Licenta.Core.Entities.Post", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(5000)
+                        .HasColumnType("varchar(5000)");
+
+                    b.Property<long?>("PartnerId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PartnerId");
+
+                    b.ToTable("Posts");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut quam imperdiet, ullamcorper ex non, efficitur nisi. Aliquam erat volutpat. Nullam et luctus dui, a porttitor lacus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque et cursus erat. Nullam cursus consequat leo, a laoreet lectus convallis nec. Maecenas eget felis neque. Morbi lacinia neque id sapien dapibus, ac gravida neque pulvinar. Pellentesque rhoncus eu augue a pretium. ",
+                            PartnerId = 1L,
+                            Title = "Post 1"
+                        },
+                        new
+                        {
+                            Id = 2L,
+                            Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut quam imperdiet, ullamcorper ex non, efficitur nisi. Aliquam erat volutpat. Nullam et luctus dui, a porttitor lacus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque et cursus erat. Nullam cursus consequat leo, a laoreet lectus convallis nec. Maecenas eget felis neque. Morbi lacinia neque id sapien dapibus, ac gravida neque pulvinar. Pellentesque rhoncus eu augue a pretium.",
+                            PartnerId = 1L,
+                            Title = "Post 2"
+                        },
+                        new
+                        {
+                            Id = 3L,
+                            Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut quam imperdiet, ullamcorper ex non, efficitur nisi. Aliquam erat volutpat. Nullam et luctus dui, a porttitor lacus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque et cursus erat. Nullam cursus consequat leo, a laoreet lectus convallis nec. Maecenas eget felis neque. Morbi lacinia neque id sapien dapibus, ac gravida neque pulvinar. Pellentesque rhoncus eu augue a pretium.",
+                            PartnerId = 3L,
+                            Title = "Post 3"
                         });
                 });
 
@@ -314,6 +383,26 @@ namespace Licenta.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Licenta.Core.Entities.Image", b =>
+                {
+                    b.HasOne("Licenta.Core.Entities.Post", "Post")
+                        .WithMany("Images")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Post");
+                });
+
+            modelBuilder.Entity("Licenta.Core.Entities.Post", b =>
+                {
+                    b.HasOne("Licenta.Core.Entities.Partner", "Partner")
+                        .WithMany("Posts")
+                        .HasForeignKey("PartnerId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Partner");
+                });
+
             modelBuilder.Entity("Licenta.Core.Entities.UserRole", b =>
                 {
                     b.HasOne("Licenta.Core.Entities.Role", null)
@@ -375,6 +464,16 @@ namespace Licenta.Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Licenta.Core.Entities.Partner", b =>
+                {
+                    b.Navigation("Posts");
+                });
+
+            modelBuilder.Entity("Licenta.Core.Entities.Post", b =>
+                {
+                    b.Navigation("Images");
                 });
 
             modelBuilder.Entity("Licenta.Core.Entities.Role", b =>
