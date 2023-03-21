@@ -26,6 +26,7 @@ public class AppDbContext : IdentityDbContext<
     public DbSet<Partner> Partners { get; set; }
     public DbSet<Post> Posts { get; set; }
     public DbSet<Image> Images { get; set; }
+    public DbSet<Job> Jobs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -36,5 +37,6 @@ public class AppDbContext : IdentityDbContext<
         modelBuilder.ApplyConfiguration(new PartnerConfiguration());
         modelBuilder.ApplyConfiguration(new PostConfiguration());
         modelBuilder.ApplyConfiguration(new ImageConfiguration());
+        modelBuilder.ApplyConfiguration(new JobConfiguration());
     }
 }

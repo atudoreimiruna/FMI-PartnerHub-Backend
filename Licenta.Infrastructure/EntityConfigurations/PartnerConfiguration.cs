@@ -4,7 +4,6 @@ using Licenta.Core.Entities;
 
 namespace Licenta.Infrastructure.EntityConfigurations;
 
-
 public class PartnerConfiguration : IEntityTypeConfiguration<Partner>
 {
     public void Configure(EntityTypeBuilder<Partner> builder)
@@ -28,6 +27,12 @@ public class PartnerConfiguration : IEntityTypeConfiguration<Partner>
 
         builder
             .HasMany(c => c.Posts)
+            .WithOne(n => n.Partner)
+            .HasForeignKey(n => n.PartnerId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder
+            .HasMany(c => c.Jobs)
             .WithOne(n => n.Partner)
             .HasForeignKey(n => n.PartnerId)
             .OnDelete(DeleteBehavior.Cascade);

@@ -9,7 +9,6 @@ public class ImageConfiguration : IEntityTypeConfiguration<Image>
     public void Configure(EntityTypeBuilder<Image> builder)
     {
         // CONFIG
-
         builder
             .HasOne(cs => cs.Post)
             .WithMany(cs => cs.Images)
