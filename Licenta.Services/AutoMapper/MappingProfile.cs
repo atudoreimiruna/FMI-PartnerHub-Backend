@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Licenta.Core.Entities;
 using Licenta.Core.Extensions.PagedList;
+using Licenta.Services.DTOs.Job;
 using Licenta.Services.DTOs.Partner;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +12,20 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
+        CreateMap<Partner, PartnerPostDTO>().ReverseMap();
         CreateMap<Partner, PartnerViewDTO>().ReverseMap();
         CreateMap<Partner, PartnerPutDTO>()
             .ReverseMap()
+            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+        CreateMap<Job, JobPostDTO>().ReverseMap();
+        CreateMap<Job, JobViewDTO>().ReverseMap();
+        CreateMap<Job, JobPutDTO>()
+            .ReverseMap()
+            .ForMember(opt => opt.MinSalary, src => src.Ignore())
+            .ForMember(opt => opt.MaxSalary, src => src.Ignore())
+            .ForMember(opt => opt.Experience, src => src.Ignore())
+            .ForMember(opt => opt.PartnerId, src => src.Ignore())
             .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
         /// <summary>
@@ -21,6 +33,12 @@ public class MappingProfile : Profile
         /// </summary>
         CreateMap(typeof(PagedList<>), typeof(PagedList<>))
             .ConvertUsing(typeof(PagedListConverter<,>));
+
+        /// <summary>
+        /// Mappings between List and PagedList.
+        /// </summary>
+        CreateMap(typeof(List<>), typeof(PagedList<>))
+            .ConvertUsing(typeof(ListToPagedListConverter<,>));
     }
 
     // CONVERTERS
@@ -31,6 +49,16 @@ public class MappingProfile : Profile
             var items = context.Mapper.Map<IEnumerable<TSource>, IEnumerable<TDestination>>(source.AsEnumerable());
 
             return new PagedList<TDestination>(items, source.TotalCount, source.CurrentPage, source.PageSize, source.IsEnabled);
+        }
+    }
+
+    public class ListToPagedListConverter<TSource, TDestination> : ITypeConverter<List<TSource>, PagedList<TDestination>> where TSource : class where TDestination : class
+    {
+        public PagedList<TDestination> Convert(List<TSource> source, PagedList<TDestination> destination, ResolutionContext context)
+        {
+            var items = context.Mapper.Map<IEnumerable<TSource>, IEnumerable<TDestination>>(source.AsEnumerable());
+
+            return new PagedList<TDestination>(items, source.Count, 1, source.Count, false);
         }
     }
 

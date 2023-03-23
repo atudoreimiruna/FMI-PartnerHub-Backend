@@ -15,6 +15,7 @@ public static class ServiceExtension
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
         services.AddTransient<IPartnerManager, PartnerManager>();
+        services.AddTransient<IJobManager, JobManager>();
         services.AddTransient<IImageManager, ImageManager>();
 
         services.AddTransient<IAuthManager, AuthManager>();

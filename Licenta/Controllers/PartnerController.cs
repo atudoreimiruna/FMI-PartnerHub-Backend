@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Licenta.Services.Interfaces;
-using Licenta.Services.QueryParameters.Partner;
 using System.Threading.Tasks;
 using Licenta.Services.DTOs.Partner;
+using Licenta.Services.QueryParameters;
 
 namespace Licenta.Api.Controllers;
 

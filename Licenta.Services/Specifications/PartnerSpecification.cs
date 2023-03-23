@@ -1,5 +1,5 @@
 ﻿using Licenta.Core.Entities;
-using Licenta.Services.QueryParameters.Partner;
+using Licenta.Services.QueryParameters;
 
 namespace Licenta.Services.Specifications;
 

@@ -5,7 +5,7 @@ using Licenta.Core.Interfaces;
 using Licenta.Services.DTOs.Partner;
 using Licenta.Services.Exceptions;
 using Licenta.Services.Interfaces;
-using Licenta.Services.QueryParameters.Partner;
+using Licenta.Services.QueryParameters;
 using Licenta.Services.Specifications;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -66,7 +66,6 @@ public class PartnerManager : IPartnerManager
         }
 
         _mapper.Map(partnerDto, partner);
-
         await _partnerRepository.UpdateAsync(partner);
 
         return await GetPartnerProfileByIdAsync(partnerDto.Id);

@@ -1,6 +1,6 @@
 ﻿using Licenta.Core.Extensions.PagedList;
 using Licenta.Services.DTOs.Partner;
-using Licenta.Services.QueryParameters.Partner;
+using Licenta.Services.QueryParameters;
 using System.Threading.Tasks;
 
 namespace Licenta.Services.Interfaces;

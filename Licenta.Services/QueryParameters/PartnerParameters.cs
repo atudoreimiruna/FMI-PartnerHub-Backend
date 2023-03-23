@@ -1,4 +1,4 @@
-﻿namespace Licenta.Services.QueryParameters.Partner;
+﻿namespace Licenta.Services.QueryParameters;
 
 public class PartnerParameters : BaseParameters
 {
