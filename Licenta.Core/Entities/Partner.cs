@@ -11,5 +11,4 @@ public class Partner
     public string Contact { get; set; }
     public virtual ICollection<Post> Posts { get; set; } = new List<Post>();
     public virtual ICollection<Job> Jobs { get; set; } = new List<Job>();
-
 }
