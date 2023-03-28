@@ -23,7 +23,7 @@ public class PartnerController : ControllerBase
         return Ok(partner);
     }
 
-    [HttpGet("partners")]
+    [HttpGet]
     public async Task<IActionResult> ListPartners([FromQuery] PartnerParameters parameters)
     {
         var partners = await _partnerManager.ListPartnersAsync(parameters);
