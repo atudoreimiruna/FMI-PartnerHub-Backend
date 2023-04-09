@@ -9,5 +9,5 @@ public class Post
     public string Description { get; set; }
     public long? PartnerId { get; set; }
     public virtual Partner Partner { get; set; }
-    public virtual ICollection<Image> Images { get; set; } = new List<Image>();
+    public virtual ICollection<File> Files { get; set; } = new List<File>();
 }

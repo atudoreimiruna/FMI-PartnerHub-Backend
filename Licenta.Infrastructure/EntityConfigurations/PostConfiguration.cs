@@ -18,7 +18,7 @@ public class PostConfiguration : IEntityTypeConfiguration<Post>
             .HasMaxLength(5000);
 
         builder
-            .HasMany(r => r.Images)
+            .HasMany(r => r.Files)
             .WithOne(r => r.Post)
             .HasForeignKey(r => r.PostId);
 

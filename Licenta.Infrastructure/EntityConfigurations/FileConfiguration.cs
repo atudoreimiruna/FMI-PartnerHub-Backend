@@ -1,17 +1,16 @@
-﻿using Licenta.Core.Entities;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 
 namespace Licenta.Infrastructure.EntityConfigurations;
 
-public class ImageConfiguration : IEntityTypeConfiguration<Image>
+public class FileConfiguration : IEntityTypeConfiguration<Core.Entities.File>
 {
-    public void Configure(EntityTypeBuilder<Image> builder)
+    public void Configure(EntityTypeBuilder<Core.Entities.File> builder)
     {
         // CONFIG
         builder
             .HasOne(cs => cs.Post)
-            .WithMany(cs => cs.Images)
+            .WithMany(cs => cs.Files)
             .HasForeignKey(cs => cs.PostId)
             .IsRequired(false)
             .OnDelete(DeleteBehavior.SetNull);

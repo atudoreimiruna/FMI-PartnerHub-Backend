@@ -16,7 +16,7 @@ public static class ServiceExtension
 
         services.AddTransient<IPartnerManager, PartnerManager>();
         services.AddTransient<IJobManager, JobManager>();
-        services.AddTransient<IImageManager, ImageManager>();
+        services.AddTransient<IFileManager, FileManager>();
 
         services.AddTransient<IAuthManager, AuthManager>();
         services.AddTransient<ITokenHelper, TokenHelper>();
