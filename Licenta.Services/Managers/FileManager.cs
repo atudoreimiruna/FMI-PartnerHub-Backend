@@ -22,19 +22,19 @@ public class FileManager : IFileManager
 {
     private readonly string _storageConnectionString;
     private readonly string _storageContainerName;
-    private readonly IRepository<Core.Entities.File> _imageRepository;
+    private readonly IRepository<Core.Entities.File> _fileRepository;
     private readonly IMapper _mapper;
     private readonly ILogger<FileManager> _logger;
 
     public FileManager(
         IConfiguration configuration, 
         ILogger<FileManager> logger,
-        IRepository<Core.Entities.File> imageRepository,
+        IRepository<Core.Entities.File> fileRepository,
         IMapper mapper)
     {
         _storageConnectionString = configuration.GetValue<string>("BlobConnectionString");
         _storageContainerName = configuration.GetValue<string>("BlobContainerName");
-        _imageRepository = imageRepository;
+        _fileRepository = fileRepository;
         _mapper = mapper;
         _logger = logger;
     }
@@ -66,6 +66,7 @@ public class FileManager : IFileManager
         return files;
     }
 
+    // TODO: post file entity
     public async Task<BlobResponseDTO> UploadAsync(IFormFile blob)
     {
         // Create new upload response object that we can return to the requesting method
@@ -91,6 +92,14 @@ public class FileManager : IFileManager
             response.Error = false;
             response.Blob.Uri = client.Uri.AbsoluteUri;
             response.Blob.Name = client.Name;
+
+            Core.Entities.File file = new Core.Entities.File
+            {
+                Name = blob.FileName,
+                Uri = response.Blob.Uri
+            };
+
+            await _fileRepository.AddAsync(file);
 
         }
         // If the file already exists, we catch the exception and do not upload it

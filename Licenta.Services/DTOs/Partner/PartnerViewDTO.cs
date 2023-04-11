@@ -7,4 +7,5 @@ public class PartnerViewDTO
     public string Description { get; set; }
     public string Address { get; set; }
     public string Contact { get; set; }
+    public string MainImageUrl { get; set; }
 }
