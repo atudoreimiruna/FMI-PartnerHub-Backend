@@ -26,6 +26,10 @@ public class PartnerConfiguration : IEntityTypeConfiguration<Partner>
             .HasMaxLength(300);
 
         builder
+           .Property(x => x.LogoImageUrl)
+           .HasMaxLength(300);
+
+        builder
             .Property(x => x.Contact)
             .HasMaxLength(100);
 
