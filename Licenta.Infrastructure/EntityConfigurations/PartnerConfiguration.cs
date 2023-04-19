@@ -15,7 +15,7 @@ public class PartnerConfiguration : IEntityTypeConfiguration<Partner>
 
         builder
             .Property(x => x.Description)
-            .HasMaxLength(500);
+            .HasMaxLength(3000);
 
         builder
             .Property(x => x.Address)

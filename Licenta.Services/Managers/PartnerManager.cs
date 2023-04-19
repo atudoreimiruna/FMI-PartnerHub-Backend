@@ -46,6 +46,7 @@ public class PartnerManager : IPartnerManager
     {
         var partner = await _partnerRepository
             .AsQueryable()
+            .Include(x => x.Jobs)
             .Where(x => x.Id == id)
             .FirstOrDefaultAsync();
 

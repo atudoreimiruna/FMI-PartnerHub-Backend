@@ -1,4 +1,7 @@
-﻿namespace Licenta.Services.DTOs.Partner;
+﻿using Licenta.Services.DTOs.Job;
+using System.Collections.Generic;
+
+namespace Licenta.Services.DTOs.Partner;
 
 public class PartnerViewDTO
 {
@@ -8,4 +11,6 @@ public class PartnerViewDTO
     public string Address { get; set; }
     public string Contact { get; set; }
     public string MainImageUrl { get; set; }
+    public string LogoImageUrl { get; set; }
+    public List<JobViewDTO> Jobs { get; set; }
 }

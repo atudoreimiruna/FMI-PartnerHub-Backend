@@ -13,7 +13,9 @@ public class MappingProfile : Profile
     public MappingProfile()
     {
         CreateMap<Partner, PartnerPostDTO>().ReverseMap();
-        CreateMap<Partner, PartnerViewDTO>().ReverseMap();
+        CreateMap<Partner, PartnerViewDTO>()
+            .ForMember(dest => dest.Jobs, opt => opt.MapFrom(src => src.Jobs))
+            .ReverseMap();
         CreateMap<Partner, PartnerPutDTO>()
             .ReverseMap()
             .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
@@ -23,7 +25,7 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.PartnerLogo, opt => opt.MapFrom(src => src.Partner.LogoImageUrl))
             .ReverseMap();
 
-        CreateMap<Job, JobPutDTO>()
+        CreateMap<Job, JobPutDTO>() 
             .ReverseMap()
             .ForMember(opt => opt.MinSalary, src => src.Ignore())
             .ForMember(opt => opt.MaxSalary, src => src.Ignore())

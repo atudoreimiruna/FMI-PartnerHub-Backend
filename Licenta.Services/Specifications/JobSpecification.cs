@@ -54,7 +54,6 @@ public class JobSpecification : Specification<Job>
         AddInclude(x => x
            .Include(x => x.Partner));
 
-
        AddPagination(parameters.PageNumber, parameters.PageSize);
     }
 }

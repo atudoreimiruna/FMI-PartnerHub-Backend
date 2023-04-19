@@ -1,5 +1,6 @@
 ﻿using Licenta.Core.Entities;
 using Licenta.Services.QueryParameters;
+using Microsoft.EntityFrameworkCore;
 
 namespace Licenta.Services.Specifications;
 
@@ -31,6 +32,9 @@ public class PartnerSpecification : Specification<Partner>
             default:
                 break;
         }
+
+        AddInclude(x => x
+           .Include(x => x.Jobs));
 
         AddPagination(parameters.PageNumber, parameters.PageSize);
     }
