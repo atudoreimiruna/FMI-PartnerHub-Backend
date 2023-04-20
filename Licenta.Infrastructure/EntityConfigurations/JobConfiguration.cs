@@ -40,6 +40,7 @@ public class JobConfiguration : IEntityTypeConfiguration<Job>
                 Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut quam imperdiet, ullamcorper ex non, efficitur nisi. Aliquam erat volutpat. Nullam et luctus dui, a porttitor lacus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque et cursus erat. Nullam cursus consequat leo, a laoreet lectus convallis nec. Maecenas eget felis neque. Morbi lacinia neque id sapien dapibus, ac gravida neque pulvinar. Pellentesque rhoncus eu augue a pretium. ",
                 Address = "Bucharest",
                 Experience = JobExperienceEnum.Entry,
+                Activated = true,
                 PartnerId = 1
             },
             new Job
@@ -51,6 +52,7 @@ public class JobConfiguration : IEntityTypeConfiguration<Job>
                 Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut quam imperdiet, ullamcorper ex non, efficitur nisi. Aliquam erat volutpat. Nullam et luctus dui, a porttitor lacus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque et cursus erat. Nullam cursus consequat leo, a laoreet lectus convallis nec. Maecenas eget felis neque. Morbi lacinia neque id sapien dapibus, ac gravida neque pulvinar. Pellentesque rhoncus eu augue a pretium. ",
                 Address = "Bucharest",
                 Experience = JobExperienceEnum.Senior,
+                Activated = true,
                 PartnerId = 2
             }
         );

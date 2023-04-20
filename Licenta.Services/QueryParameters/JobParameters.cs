@@ -9,4 +9,5 @@ public class JobParameters : BaseParameters
     public JobExperienceEnum? Experience { get; set; }
     public long? MinSalary { get; set; }
     public long? MaxSalary { get; set; }
+    public string PartnerName { get; set; }
 }

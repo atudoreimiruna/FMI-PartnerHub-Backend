@@ -1,7 +1,8 @@
-﻿namespace Licenta.Core.Entities;
+﻿using Licenta.Core.Entities.Base;
 
-public class Newsletter
+namespace Licenta.Core.Entities;
+
+public class Newsletter : BaseEntity
 {
-    public long Id { get; set; }
     public string Email { get; set; }
 }

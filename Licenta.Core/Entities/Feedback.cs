@@ -1,8 +1,9 @@
-﻿namespace Licenta.Core.Entities;
+﻿using Licenta.Core.Entities.Base;
 
-public class Feedback
+namespace Licenta.Core.Entities;
+
+public class Feedback : BaseEntity
 {
-    public long Id { get; set; }
     public string Name { get; set; }
     public string Message { get; set; }
 }

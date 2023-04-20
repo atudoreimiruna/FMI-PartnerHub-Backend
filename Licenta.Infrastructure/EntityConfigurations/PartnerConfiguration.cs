@@ -14,6 +14,10 @@ public class PartnerConfiguration : IEntityTypeConfiguration<Partner>
             .IsRequired();
 
         builder
+            .Property(x => x.MainDescription)
+            .HasMaxLength(1000);
+
+        builder
             .Property(x => x.Description)
             .HasMaxLength(3000);
 
@@ -52,6 +56,7 @@ public class PartnerConfiguration : IEntityTypeConfiguration<Partner>
                 Id = 1,
                 Name = "Partner 1",
                 Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut quam imperdiet, ullamcorper ex non, efficitur nisi. Aliquam erat volutpat. Nullam et luctus dui, a porttitor lacus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque et cursus erat. Nullam cursus consequat leo, a laoreet lectus convallis nec. Maecenas eget felis neque. Morbi lacinia neque id sapien dapibus, ac gravida neque pulvinar. Pellentesque rhoncus eu augue a pretium. ",
+                MainDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut quam imperdiet, ullamcorper ex non, efficitur nisi.",
                 Address = "Bucharest",
                 Contact = "Phone: 0886565767"
             },
@@ -59,6 +64,7 @@ public class PartnerConfiguration : IEntityTypeConfiguration<Partner>
             {
                 Id = 2,
                 Name = "Partner 2",
+                MainDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut quam imperdiet, ullamcorper ex non, efficitur nisi.",
                 Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut quam imperdiet, ullamcorper ex non, efficitur nisi. Aliquam erat volutpat. Nullam et luctus dui, a porttitor lacus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque et cursus erat. Nullam cursus consequat leo, a laoreet lectus convallis nec. Maecenas eget felis neque. Morbi lacinia neque id sapien dapibus, ac gravida neque pulvinar. Pellentesque rhoncus eu augue a pretium.",
                 Address = "Bucharest",
                 Contact = "Email: office@partner.com"
@@ -67,6 +73,7 @@ public class PartnerConfiguration : IEntityTypeConfiguration<Partner>
             {
                 Id = 3,
                 Name = "Partner 3",
+                MainDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut quam imperdiet, ullamcorper ex non, efficitur nisi.",
                 Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut quam imperdiet, ullamcorper ex non, efficitur nisi. Aliquam erat volutpat. Nullam et luctus dui, a porttitor lacus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque et cursus erat. Nullam cursus consequat leo, a laoreet lectus convallis nec. Maecenas eget felis neque. Morbi lacinia neque id sapien dapibus, ac gravida neque pulvinar. Pellentesque rhoncus eu augue a pretium.",
                 Address = "Bucharest",
                 Contact = "Phone: 0775345243"

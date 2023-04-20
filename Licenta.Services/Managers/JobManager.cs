@@ -89,6 +89,22 @@ public class JobManager : IJobManager
         return await GetJobProfileByIdAsync(jobDto.Id);
     }
 
+    public async Task<JobViewDTO> UpdateActivatedAsync(JobPutActivatedDTO jobDto)
+    {
+        var job = await _jobRepository.FindByIdAsync(jobDto.Id);
+
+        if (job == null)
+        {
+            throw new CustomNotFoundException("Job Not Found");
+        }
+
+        _mapper.Map(jobDto, job);
+
+        await _jobRepository.UpdateAsync(job);
+
+        return await GetJobProfileByIdAsync(jobDto.Id);
+    }
+
     public async Task DeleteAsync(long id)
     {
         var job = await _jobRepository.FindByIdAsync(id);

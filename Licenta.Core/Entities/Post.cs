@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Licenta.Core.Entities.Base;
+using System.Collections.Generic;
 
 namespace Licenta.Core.Entities;
 
-public class Post
+public class Post : BaseEntity
 {
-    public long Id { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
     public long? PartnerId { get; set; }

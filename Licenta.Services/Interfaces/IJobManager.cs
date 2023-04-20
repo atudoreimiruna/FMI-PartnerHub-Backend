@@ -12,6 +12,7 @@ public interface IJobManager
     Task<PagedList<JobViewDTO>> GetJobsOfPartnerAsync(long partnerId);
     Task<JobViewDTO> GetJobProfileByIdAsync(long id);
     Task<JobViewDTO> UpdateAsync(JobPutDTO jobDto);
+    Task<JobViewDTO> UpdateActivatedAsync(JobPutActivatedDTO jobDto);
     Task DeleteAsync(long id);
 }
 

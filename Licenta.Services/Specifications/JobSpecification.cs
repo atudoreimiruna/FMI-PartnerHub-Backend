@@ -13,6 +13,16 @@ public class JobSpecification : Specification<Job>
             AddCriteria(x => x.Title.ToLower().Contains(parameters.Title.ToLower()));
         }
 
+        if (!string.IsNullOrEmpty(parameters.Address))
+        {
+            AddCriteria(x => x.Address.ToLower().Contains(parameters.Address.ToLower()));
+        }
+
+        if (!string.IsNullOrEmpty(parameters.PartnerName))
+        {
+            AddCriteria(x => x.Partner.Name.ToLower().Contains(parameters.PartnerName.ToLower()));
+        }
+
         if (parameters.Experience != null)
         {
             AddCriteria(x => x.Experience == parameters.Experience);

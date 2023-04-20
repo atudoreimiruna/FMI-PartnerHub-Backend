@@ -23,8 +23,10 @@ public class MappingProfile : Profile
         CreateMap<Job, JobPostDTO>().ReverseMap();
         CreateMap<Job, JobViewDTO>()
             .ForMember(dest => dest.PartnerLogo, opt => opt.MapFrom(src => src.Partner.LogoImageUrl))
+            .ForMember(dest => dest.PartnerName, opt => opt.MapFrom(src => src.Partner.Name))
             .ReverseMap();
 
+        CreateMap<Job, JobPutActivatedDTO>().ReverseMap();
         CreateMap<Job, JobPutDTO>() 
             .ReverseMap()
             .ForMember(opt => opt.MinSalary, src => src.Ignore())

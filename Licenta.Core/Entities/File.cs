@@ -1,8 +1,9 @@
-﻿namespace Licenta.Core.Entities;
+﻿using Licenta.Core.Entities.Base;
 
-public class File
+namespace Licenta.Core.Entities;
+
+public class File : BaseEntity
 {
-    public long Id { get; set; }
     public string Name { get; set; }
     public string? Uri { get; set; }
     public long? PostId { get; set; }

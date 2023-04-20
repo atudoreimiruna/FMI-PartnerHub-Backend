@@ -51,6 +51,13 @@ public class JobController : ControllerBase
         return Ok(job);
     }
 
+    [HttpPut("activated")]
+    public async Task<IActionResult> UpdateActivatedAsync([FromBody] JobPutActivatedDTO jobDto)
+    {
+        var job = await _jobManager.UpdateActivatedAsync(jobDto);
+        return Ok(job);
+    }
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteJob([FromRoute] long id)
     {
