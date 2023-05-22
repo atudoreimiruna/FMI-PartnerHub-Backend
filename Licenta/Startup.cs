@@ -5,17 +5,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using Licenta.Infrastructure;
 using Licenta.Infrastructure.Seeders;
 using Licenta.Core.Entities;
 using AutoMapper;
 using Licenta.Services.AutoMapper;
+using System;
 
 namespace Licenta.Api;
 
@@ -63,45 +59,52 @@ public class Startup
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
 
-        services
-            .AddAuthentication(options =>
+        services.AddAuthentication()
+            .AddMicrosoftAccount(microsoftOptions =>
             {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer("AuthScheme", options =>
-            {
-                options.RequireHttpsMetadata = true;
-                options.SaveToken = true;
-                var secret = Configuration.GetSection("Jwt").GetSection("Token").Get<String>();
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    ValidateLifetime = true,
-                    RequireExpirationTime = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret)),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                };
-                options.Events = new JwtBearerEvents
-                {
-                    OnAuthenticationFailed = context =>
-                    {
-                        if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
-                        {
-                            context.Response.Headers.Add("Token-Expired", "true");
-                        }
-                        return Task.CompletedTask;
-                    }
-                };
+                microsoftOptions.ClientId = Configuration["Authentication:Microsoft:ClientId"];
+                microsoftOptions.ClientSecret = Configuration["Authentication:Microsoft:ClientSecret"];
             });
 
+        //services
+        //    .AddAuthentication(options =>
+        //    {
+        //        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        //        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        //    })
+        //    .AddJwtBearer("AuthScheme", options =>
+        //    {
+        //        options.RequireHttpsMetadata = true;
+        //        options.SaveToken = true;
+        //        var secret = Configuration.GetSection("Jwt").GetSection("Token").Get<String>();
+        //        options.TokenValidationParameters = new TokenValidationParameters
+        //        {
+        //            ValidateIssuerSigningKey = true,
+        //            ValidateLifetime = true,
+        //            RequireExpirationTime = true,
+        //            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret)),
+        //            ValidateIssuer = false,
+        //            ValidateAudience = false
+        //        };
+        //        options.Events = new JwtBearerEvents
+        //        {
+        //            OnAuthenticationFailed = context =>
+        //            {
+        //                if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+        //                {
+        //                    context.Response.Headers.Add("Token-Expired", "true");
+        //                }
+        //                return Task.CompletedTask;
+        //            }
+        //        };
+        //    });
 
-        services.AddAuthorization(opt =>
-        {
-            opt.AddPolicy("Admin", policy => policy.RequireRole("Admin").RequireAuthenticatedUser().AddAuthenticationSchemes("AuthScheme").Build());
-            opt.AddPolicy("User", policy => policy.RequireRole("User").RequireAuthenticatedUser().AddAuthenticationSchemes("AuthScheme").Build());
-        });
+
+        //services.AddAuthorization(opt =>
+        //{
+        //    opt.AddPolicy("Admin", policy => policy.RequireRole("Admin").RequireAuthenticatedUser().AddAuthenticationSchemes("AuthScheme").Build());
+        //    opt.AddPolicy("User", policy => policy.RequireRole("User").RequireAuthenticatedUser().AddAuthenticationSchemes("AuthScheme").Build());
+        //});
 
         var mapperConfig = new MapperConfiguration(options =>
         {
@@ -131,6 +134,8 @@ public class Startup
         app.UseRouting();
 
         app.UseCors(SpecificOrigins);
+
+        app.UseAuthentication();
 
         app.UseAuthorization();
 
