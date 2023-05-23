@@ -3,6 +3,7 @@ using System;
 using Licenta.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Licenta.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230523122417_CriteriaFieldOnJob")]
+    partial class CriteriaFieldOnJob
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -120,9 +123,6 @@ namespace Licenta.Infrastructure.Migrations
                     b.Property<string>("Salary")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Skills")
-                        .HasColumnType("longtext");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -152,7 +152,6 @@ namespace Licenta.Infrastructure.Migrations
                             MinExperience = 0,
                             PartnerId = 1L,
                             Salary = "Platit: 2000",
-                            Skills = "Problem Solving, Teamwork",
                             Title = "Job 1",
                             Type = 2
                         },
@@ -170,7 +169,6 @@ namespace Licenta.Infrastructure.Migrations
                             MinExperience = 2,
                             PartnerId = 2L,
                             Salary = "Neplatit",
-                            Skills = "Problem Solving, Teamwork",
                             Title = "Job 2",
                             Type = 0
                         });

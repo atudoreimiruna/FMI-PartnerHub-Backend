@@ -29,9 +29,8 @@ public class MappingProfile : Profile
         CreateMap<Job, JobPutActivatedDTO>().ReverseMap();
         CreateMap<Job, JobPutDTO>() 
             .ReverseMap()
-            .ForMember(opt => opt.MinSalary, src => src.Ignore())
-            .ForMember(opt => opt.MaxSalary, src => src.Ignore())
             .ForMember(opt => opt.Experience, src => src.Ignore())
+            .ForMember(opt => opt.Type, src => src.Ignore())
             .ForMember(opt => opt.PartnerId, src => src.Ignore())
             .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 

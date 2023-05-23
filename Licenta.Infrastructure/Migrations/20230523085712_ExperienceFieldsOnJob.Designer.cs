@@ -3,6 +3,7 @@ using System;
 using Licenta.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Licenta.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230523085712_ExperienceFieldsOnJob")]
+    partial class ExperienceFieldsOnJob
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -93,10 +96,6 @@ namespace Licenta.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("Criteria")
-                        .HasMaxLength(2000)
-                        .HasColumnType("varchar(2000)");
-
                     b.Property<string>("Description")
                         .HasMaxLength(2000)
                         .HasColumnType("varchar(2000)");
@@ -120,16 +119,10 @@ namespace Licenta.Infrastructure.Migrations
                     b.Property<string>("Salary")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Skills")
-                        .HasColumnType("longtext");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -144,7 +137,6 @@ namespace Licenta.Infrastructure.Migrations
                             Activated = true,
                             Address = "Bucharest",
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Criteria = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut quam imperdiet, ullamcorper ex non, efficitur nisi. Aliquam erat volutpat. Nullam et luctus dui, a porttitor lacus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque et cursus erat. Nullam cursus consequat leo, a laoreet lectus convallis nec. Maecenas eget felis neque. Morbi lacinia neque id sapien dapibus, ac gravida neque pulvinar. Pellentesque rhoncus eu augue a pretium. ",
                             Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut quam imperdiet, ullamcorper ex non, efficitur nisi. Aliquam erat volutpat. Nullam et luctus dui, a porttitor lacus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque et cursus erat. Nullam cursus consequat leo, a laoreet lectus convallis nec. Maecenas eget felis neque. Morbi lacinia neque id sapien dapibus, ac gravida neque pulvinar. Pellentesque rhoncus eu augue a pretium. ",
                             Experience = 0,
                             LastUpdated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -152,9 +144,7 @@ namespace Licenta.Infrastructure.Migrations
                             MinExperience = 0,
                             PartnerId = 1L,
                             Salary = "Platit: 2000",
-                            Skills = "Problem Solving, Teamwork",
-                            Title = "Job 1",
-                            Type = 2
+                            Title = "Job 1"
                         },
                         new
                         {
@@ -162,7 +152,6 @@ namespace Licenta.Infrastructure.Migrations
                             Activated = true,
                             Address = "Bucharest",
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Criteria = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut quam imperdiet, ullamcorper ex non, efficitur nisi. Aliquam erat volutpat. Nullam et luctus dui, a porttitor lacus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque et cursus erat. Nullam cursus consequat leo, a laoreet lectus convallis nec. Maecenas eget felis neque. Morbi lacinia neque id sapien dapibus, ac gravida neque pulvinar. Pellentesque rhoncus eu augue a pretium. ",
                             Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut quam imperdiet, ullamcorper ex non, efficitur nisi. Aliquam erat volutpat. Nullam et luctus dui, a porttitor lacus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque et cursus erat. Nullam cursus consequat leo, a laoreet lectus convallis nec. Maecenas eget felis neque. Morbi lacinia neque id sapien dapibus, ac gravida neque pulvinar. Pellentesque rhoncus eu augue a pretium. ",
                             Experience = 2,
                             LastUpdated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -170,9 +159,7 @@ namespace Licenta.Infrastructure.Migrations
                             MinExperience = 2,
                             PartnerId = 2L,
                             Salary = "Neplatit",
-                            Skills = "Problem Solving, Teamwork",
-                            Title = "Job 2",
-                            Type = 0
+                            Title = "Job 2"
                         });
                 });
 

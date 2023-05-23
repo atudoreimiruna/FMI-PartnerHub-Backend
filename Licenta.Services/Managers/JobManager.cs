@@ -79,9 +79,8 @@ public class JobManager : IJobManager
         }
 
         _mapper.Map(jobDto, job);
-        if (jobDto.MaxSalary != null) { job.MaxSalary = jobDto.MaxSalary.Value; }
-        if (jobDto.MinSalary != null) { job.MinSalary = jobDto.MinSalary.Value; }
         if (jobDto.Experience != null) { job.Experience = jobDto.Experience.Value; }
+        if (jobDto.Type != null) { job.Type = jobDto.Type.Value; }
         if (jobDto.PartnerId != 0) { job.PartnerId = jobDto.PartnerId; }
 
         await _jobRepository.UpdateAsync(job);

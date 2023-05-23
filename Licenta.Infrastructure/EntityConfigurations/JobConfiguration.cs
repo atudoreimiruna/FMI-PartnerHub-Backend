@@ -16,6 +16,10 @@ public class JobConfiguration : IEntityTypeConfiguration<Job>
 
         builder
             .Property(x => x.Description)
+            .HasMaxLength(2000); 
+        
+        builder
+            .Property(x => x.Criteria)
             .HasMaxLength(2000);
 
         builder
@@ -35,25 +39,33 @@ public class JobConfiguration : IEntityTypeConfiguration<Job>
             {
                 Id = 1,
                 Title = "Job 1",
-                MinSalary = 2000,
-                MaxSalary = 2500,
+                Salary = "Platit: 2000",
                 Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut quam imperdiet, ullamcorper ex non, efficitur nisi. Aliquam erat volutpat. Nullam et luctus dui, a porttitor lacus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque et cursus erat. Nullam cursus consequat leo, a laoreet lectus convallis nec. Maecenas eget felis neque. Morbi lacinia neque id sapien dapibus, ac gravida neque pulvinar. Pellentesque rhoncus eu augue a pretium. ",
+                Criteria = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut quam imperdiet, ullamcorper ex non, efficitur nisi. Aliquam erat volutpat. Nullam et luctus dui, a porttitor lacus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque et cursus erat. Nullam cursus consequat leo, a laoreet lectus convallis nec. Maecenas eget felis neque. Morbi lacinia neque id sapien dapibus, ac gravida neque pulvinar. Pellentesque rhoncus eu augue a pretium. ",
                 Address = "Bucharest",
+                Skills = "Problem Solving, Teamwork",
                 Experience = JobExperienceEnum.Entry,
+                MinExperience = 0,
+                MaxExperience = 1,
                 Activated = true,
-                PartnerId = 1
+                PartnerId = 1,
+                Type = TypeJobEnum.Internship
             },
             new Job
             {
                 Id = 2,
                 Title = "Job 2",
-                MinSalary = 5000,
-                MaxSalary = 5500,
+                Salary = "Neplatit",
                 Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut quam imperdiet, ullamcorper ex non, efficitur nisi. Aliquam erat volutpat. Nullam et luctus dui, a porttitor lacus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque et cursus erat. Nullam cursus consequat leo, a laoreet lectus convallis nec. Maecenas eget felis neque. Morbi lacinia neque id sapien dapibus, ac gravida neque pulvinar. Pellentesque rhoncus eu augue a pretium. ",
+                Criteria = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut quam imperdiet, ullamcorper ex non, efficitur nisi. Aliquam erat volutpat. Nullam et luctus dui, a porttitor lacus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque et cursus erat. Nullam cursus consequat leo, a laoreet lectus convallis nec. Maecenas eget felis neque. Morbi lacinia neque id sapien dapibus, ac gravida neque pulvinar. Pellentesque rhoncus eu augue a pretium. ",
                 Address = "Bucharest",
+                Skills = "Problem Solving, Teamwork",
                 Experience = JobExperienceEnum.Senior,
+                MinExperience = 2,
+                MaxExperience = 4,
                 Activated = true,
-                PartnerId = 2
+                PartnerId = 2,
+                Type = TypeJobEnum.FullTime
             }
         );
     }

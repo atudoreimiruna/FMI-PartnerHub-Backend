@@ -28,9 +28,9 @@ public class JobSpecification : Specification<Job>
             AddCriteria(x => x.Experience == parameters.Experience);
         }
 
-        if (parameters.MinSalary != null && parameters.MaxSalary != null)
+        if (parameters.MinExperience != null && parameters.MaxExperience != null)
         {
-            AddCriteria(x => x.MinSalary <= parameters.MaxSalary && x.MinSalary >= parameters.MinSalary && x.MaxSalary >= parameters.MinSalary && x.MaxSalary <= parameters.MaxSalary);
+            AddCriteria(x => x.MinExperience <= parameters.MaxExperience && x.MinExperience >= parameters.MinExperience && x.MaxExperience >= parameters.MinExperience && x.MaxExperience <= parameters.MaxExperience);
         }
 
         switch (parameters.OrderBy)
