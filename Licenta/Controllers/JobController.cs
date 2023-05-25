@@ -3,11 +3,14 @@ using Licenta.Services.Interfaces;
 using System.Threading.Tasks;
 using Licenta.Services.DTOs.Job;
 using Licenta.Services.QueryParameters;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace Licenta.Api.Controllers;
 
 [Route("api/jobs")]
 [ApiController]
+//[Authorize]
 public class JobController : ControllerBase
 {
     private readonly IJobManager _jobManager;

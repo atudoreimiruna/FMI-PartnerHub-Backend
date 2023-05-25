@@ -24,9 +24,10 @@ public class AppDbContext : IdentityDbContext<
     public DbSet<Newsletter> Newsletters { get; set; } 
     public DbSet<Feedback> Feedbacks { get; set; }
     public DbSet<Partner> Partners { get; set; }
-    public DbSet<Post> Posts { get; set; }
+    public DbSet<Event> Events { get; set; }
     public DbSet<Core.Entities.File> Files { get; set; }
     public DbSet<Job> Jobs { get; set; }
+    public DbSet<Student> Students { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -35,8 +36,9 @@ public class AppDbContext : IdentityDbContext<
         modelBuilder.ApplyConfiguration(new NewsLetterConfiguration());
         modelBuilder.ApplyConfiguration(new FeedbackConfiguration());
         modelBuilder.ApplyConfiguration(new PartnerConfiguration());
-        modelBuilder.ApplyConfiguration(new PostConfiguration());
+        modelBuilder.ApplyConfiguration(new EventConfiguration());
         modelBuilder.ApplyConfiguration(new FileConfiguration());
         modelBuilder.ApplyConfiguration(new JobConfiguration());
+        modelBuilder.ApplyConfiguration(new StudentConfiguration());
     }
 }

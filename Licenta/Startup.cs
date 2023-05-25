@@ -5,13 +5,20 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Identity;
 using Licenta.Infrastructure;
 using Licenta.Infrastructure.Seeders;
-using Licenta.Core.Entities;
 using AutoMapper;
 using Licenta.Services.AutoMapper;
-using System;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Collections.Generic;
+using Licenta.Core.Entities;
+using Microsoft.AspNetCore.Identity;
+using System.Text;
+using Microsoft.Identity.Web;
+using Microsoft.AspNetCore.Authentication.AzureAD.UI;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.IdentityModel.Logging;
 
 namespace Licenta.Api;
 
@@ -37,6 +44,7 @@ public class Startup
                 });
         });
 
+        // TODO: sterge addnwetonsoftjson
         services
             .AddControllers()
             .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
@@ -50,61 +58,123 @@ public class Startup
 
         services.AddServices();
 
-        services.AddSwaggerGen(c =>
+        services.AddSwaggerGen(options =>
         {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "Licenta", Version = "v1" });
-        });
-
-        services.AddIdentity<User, Role>()
-            .AddEntityFrameworkStores<AppDbContext>()
-            .AddDefaultTokenProviders();
-
-        services.AddAuthentication()
-            .AddMicrosoftAccount(microsoftOptions =>
+            options.SwaggerDoc("v1", new OpenApiInfo { Title = "Licenta", Version = "v1" });
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
-                microsoftOptions.ClientId = Configuration["Authentication:Microsoft:ClientId"];
-                microsoftOptions.ClientSecret = Configuration["Authentication:Microsoft:ClientSecret"];
+                Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n 
+                      Enter 'Bearer' [space] and then your token in the text input below.
+                      \r\n\r\nExample: 'Bearer 12345abcdef'",
+                Name = "Authorization",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.ApiKey,
+                Scheme = "Bearer"
             });
 
-        //services
-        //    .AddAuthentication(options =>
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement()
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        },
+                        Scheme = "oauth2",
+                        Name = "Bearer",
+                        In = ParameterLocation.Header,
+
+                    },
+                    new List<string>()
+                }
+            });
+        });
+
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.Authority = "https://login.microsoftonline.com/20ed8f4e-52f7-4d77-bfc1-862ced77c351/v2.0";
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = false,
+                ValidIssuer = "https://login.microsoftonline.com/",
+                ValidateAudience = false,
+                ValidAudience = "f969fab1-6d79-42a0-96c0-32eb06cb8d0b",
+                ValidateIssuerSigningKey = true,
+                RequireSignedTokens = true,
+                RequireExpirationTime = true,
+                IssuerSigningKeys = new List<SecurityKey>
+                {
+                    new SymmetricSecurityKey(Encoding.ASCII.GetBytes("-KI3Q9nNR7bRofxmeZoXqbHZGew"))
+                }
+            };
+        });
+
+
+        //services.AddAuthentication(
+        //    options =>
         //    {
         //        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
         //        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        //        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
         //    })
-        //    .AddJwtBearer("AuthScheme", options =>
+        //    ).AddMicrosoftAccount(microsoftOptions =>
         //    {
-        //        options.RequireHttpsMetadata = true;
-        //        options.SaveToken = true;
-        //        var secret = Configuration.GetSection("Jwt").GetSection("Token").Get<String>();
-        //        options.TokenValidationParameters = new TokenValidationParameters
-        //        {
-        //            ValidateIssuerSigningKey = true,
-        //            ValidateLifetime = true,
-        //            RequireExpirationTime = true,
-        //            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret)),
-        //            ValidateIssuer = false,
-        //            ValidateAudience = false
-        //        };
-        //        options.Events = new JwtBearerEvents
-        //        {
-        //            OnAuthenticationFailed = context =>
-        //            {
-        //                if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
-        //                {
-        //                    context.Response.Headers.Add("Token-Expired", "true");
-        //                }
-        //                return Task.CompletedTask;
-        //            }
-        //        };
-        //    });
-
-
-        //services.AddAuthorization(opt =>
-        //{
-        //    opt.AddPolicy("Admin", policy => policy.RequireRole("Admin").RequireAuthenticatedUser().AddAuthenticationSchemes("AuthScheme").Build());
-        //    opt.AddPolicy("User", policy => policy.RequireRole("User").RequireAuthenticatedUser().AddAuthenticationSchemes("AuthScheme").Build());
+        //        microsoftOptions.ClientId = Configuration["Authentication:Microsoft:ClientId"];
+        //    microsoftOptions.ClientSecret = Configuration["Authentication:Microsoft:ClientSecret"];
         //});
+
+        //services.AddIdentity<User, Role>(options =>
+        //                                  options.SignIn.RequireConfirmedAccount = true)
+        //                                 .AddEntityFrameworkStores<AppDbContext>();
+
+        //.AddMicrosoftAccount(microsoftOptions =>
+        //{
+        //    microsoftOptions.ClientId = Configuration["Authentication:Microsoft:ClientId"];
+        //    microsoftOptions.ClientSecret = Configuration["Authentication:Microsoft:ClientSecret"];
+        //});
+
+        //services.AddAuthentication(options =>
+        //{
+        //    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        //    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        //    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        //}).AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"));
+
+        //services.AddMicrosoftIdentityWebApiAuthentication(Configuration.GetSection("AzureAd"));
+        //services.AddEndpointsApiExplorer();
+        //AzureADDefaults.JwtBearerAuthenticationScheme
+
+        //services.AddAuthentication(options =>
+        //{
+        //    options.DefaultAuthenticateScheme = AzureADDefaults.JwtBearerAuthenticationScheme;
+        //    options.DefaultChallengeScheme = AzureADDefaults.JwtBearerAuthenticationScheme;
+        //    options.DefaultScheme = AzureADDefaults.JwtBearerAuthenticationScheme;
+        //})
+        //.AddAzureADBearer(options =>
+        //{
+        //    options.ClientId = Configuration["AzureAd:ClientId"];
+        //    options.Instance = Configuration["AzureAd:Instance"];
+        //    options.TenantId = Configuration["AzureAd:TenantId"];
+        //});
+
+        //services.Configure<OpenIdConnectOptions>(AzureADDefaults.OpenIdScheme, options =>
+        //{
+        //    options.Authority = options.Authority + "/v2.0";
+        //    options.TokenValidationParameters.ValidateIssuer = false;
+        //});
+
+        services.AddIdentity<User, Role>()
+           .AddEntityFrameworkStores<AppDbContext>();
+         //.AddDefaultTokenProviders();
+
 
         var mapperConfig = new MapperConfiguration(options =>
         {

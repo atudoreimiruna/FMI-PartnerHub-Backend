@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Licenta.Core.Entities;
 
-public class Post : BaseEntity
+public class Event : BaseEntity
 {
     public string Title { get; set; }
     public string Description { get; set; }

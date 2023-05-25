@@ -3,6 +3,7 @@ using Licenta.Core.Entities;
 using Licenta.Core.Extensions.PagedList;
 using Licenta.Services.DTOs.Job;
 using Licenta.Services.DTOs.Partner;
+using Licenta.Services.DTOs.Student;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,6 +13,11 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
+        CreateMap<Student, StudentViewDTO>().ReverseMap();
+        CreateMap<Student, StudentPutDTO>()
+            .ReverseMap()
+            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
         CreateMap<Partner, PartnerPostDTO>().ReverseMap();
         CreateMap<Partner, PartnerViewDTO>()
             .ForMember(dest => dest.Jobs, opt => opt.MapFrom(src => src.Jobs))

@@ -3,6 +3,7 @@ using System;
 using Licenta.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Licenta.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230525133653_ChangePostEntity")]
+    partial class ChangePostEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -133,9 +136,6 @@ namespace Licenta.Infrastructure.Migrations
                     b.Property<long?>("PartnerId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("StudentId")
-                        .HasColumnType("bigint");
-
                     b.Property<string>("Uri")
                         .HasColumnType("longtext");
 
@@ -144,8 +144,6 @@ namespace Licenta.Infrastructure.Migrations
                     b.HasIndex("EventId");
 
                     b.HasIndex("PartnerId");
-
-                    b.HasIndex("StudentId");
 
                     b.ToTable("Files");
                 });
@@ -393,56 +391,6 @@ namespace Licenta.Infrastructure.Migrations
                     b.ToTable("AspNetRoles", (string)null);
                 });
 
-            modelBuilder.Entity("Licenta.Core.Entities.Student", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Degree")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(5000)
-                        .HasColumnType("varchar(5000)");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<string>("FirstName")
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
-
-                    b.Property<string>("LastName")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<DateTime>("LastUpdated")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("PersonalEmail")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<string>("Phone")
-                        .HasMaxLength(15)
-                        .HasColumnType("varchar(15)");
-
-                    b.Property<string>("Skill")
-                        .HasMaxLength(1000)
-                        .HasColumnType("varchar(1000)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Students");
-                });
-
             modelBuilder.Entity("Licenta.Core.Entities.User", b =>
                 {
                     b.Property<long>("Id")
@@ -642,16 +590,9 @@ namespace Licenta.Infrastructure.Migrations
                         .HasForeignKey("PartnerId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("Licenta.Core.Entities.Student", "Student")
-                        .WithMany("Files")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.Navigation("Event");
 
                     b.Navigation("Partner");
-
-                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("Licenta.Core.Entities.Job", b =>
@@ -744,11 +685,6 @@ namespace Licenta.Infrastructure.Migrations
             modelBuilder.Entity("Licenta.Core.Entities.Role", b =>
                 {
                     b.Navigation("UserRoles");
-                });
-
-            modelBuilder.Entity("Licenta.Core.Entities.Student", b =>
-                {
-                    b.Navigation("Files");
                 });
 
             modelBuilder.Entity("Licenta.Core.Entities.User", b =>

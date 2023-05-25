@@ -1,20 +1,19 @@
 ﻿using AutoMapper;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs;
-using Licenta.Core.Entities;
 using Licenta.Core.Interfaces;
 using Licenta.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Azure;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Licenta.Services.DTOs.Blob;
+using Licenta.Core.Enums;
+using Licenta.Core.Entities;
+using Licenta.Services.Exceptions;
 
 namespace Licenta.Services.Managers;
 
@@ -23,6 +22,8 @@ public class FileManager : IFileManager
     private readonly string _storageConnectionString;
     private readonly string _storageContainerName;
     private readonly IRepository<Core.Entities.File> _fileRepository;
+    private readonly IRepository<Event> _eventRepository;
+    private readonly IRepository<Partner> _partnerRepository;
     private readonly IMapper _mapper;
     private readonly ILogger<FileManager> _logger;
 
@@ -30,26 +31,29 @@ public class FileManager : IFileManager
         IConfiguration configuration, 
         ILogger<FileManager> logger,
         IRepository<Core.Entities.File> fileRepository,
-        IMapper mapper)
+        IMapper mapper,
+        IRepository<Event> eventRepository,
+        IRepository<Partner> partnerRepository)
     {
         _storageConnectionString = configuration.GetValue<string>("BlobConnectionString");
         _storageContainerName = configuration.GetValue<string>("BlobContainerName");
         _fileRepository = fileRepository;
         _mapper = mapper;
         _logger = logger;
+        _eventRepository = eventRepository;
+        _partnerRepository = partnerRepository;
     }
+
+    // TODO: get by id method
 
     public async Task<List<BlobDTO>> ListAsync()
     {
-        // Get a reference to a container named in appsettings.json
         BlobContainerClient container = new BlobContainerClient(_storageConnectionString, _storageContainerName);
 
-        // Create a new list object for 
         List<BlobDTO> files = new List<BlobDTO>();
 
         await foreach (BlobItem file in container.GetBlobsAsync())
         {
-            // Add each file retrieved from the storage container to the files list by creating a BlobDto object
             string uri = container.Uri.ToString();
             var name = file.Name;
             var fullUri = $"{uri}/{name}";
@@ -62,104 +66,112 @@ public class FileManager : IFileManager
             });
         }
 
-        // Return all files to the requesting method
         return files;
     }
 
-    // TODO: post file entity
-    public async Task<BlobResponseDTO> UploadAsync(IFormFile blob)
+    public async Task<BlobResponseDTO> UploadAsync(FileEntityEnum entity, long id, IFormFile blob)
     {
-        // Create new upload response object that we can return to the requesting method
         BlobResponseDTO response = new();
 
-        // Get a reference to a container named in appsettings.json and then create it
         BlobContainerClient container = new BlobContainerClient(_storageConnectionString, _storageContainerName);
-        //await container.CreateAsync();
+
         try
         {
-            // Get a reference to the blob just uploaded from the API in a container from configuration settings
+            var uploaded_file = new Core.Entities.File();
+
             BlobClient client = container.GetBlobClient(blob.FileName);
 
-            // Open a stream for the file we want to upload
             await using (Stream? data = blob.OpenReadStream())
             {
-                // Upload the file async
                 await client.UploadAsync(data);
             }
 
-            // Everything is OK and file got uploaded
             response.Status = $"File {blob.FileName} Uploaded Successfully";
             response.Error = false;
             response.Blob.Uri = client.Uri.AbsoluteUri;
             response.Blob.Name = client.Name;
 
-            Core.Entities.File file = new Core.Entities.File
+            if (entity.Equals(FileEntityEnum.Event))
             {
-                Name = blob.FileName,
-                Uri = response.Blob.Uri
-            };
-
-            await _fileRepository.AddAsync(file);
-
+                var post = await _eventRepository.FindByIdAsync(id);
+                if (post == null)
+                {
+                    throw new CustomNotFoundException("Post Not Found");
+                }
+                uploaded_file = new Core.Entities.File
+                {
+                    Name = blob.FileName,
+                    Uri = response.Blob.Uri,
+                    Entity = FileEntityEnum.Event,
+                    EventId = post.Id
+                };
+                await _eventRepository.UpdateAsync(post);
+            }
+            else if(entity.Equals(FileEntityEnum.Partner))
+            {
+                var partner = await _partnerRepository.FindByIdAsync(id);
+                if (partner == null)
+                {
+                    throw new CustomNotFoundException("Partner Not Found");
+                }
+                uploaded_file = new Core.Entities.File
+                {
+                    Name = blob.FileName,
+                    Uri = response.Blob.Uri,
+                    Entity = FileEntityEnum.Partner,
+                    PartnerId = partner.Id
+                };
+                await _partnerRepository.UpdateAsync(partner);
+            }
+            await _fileRepository.AddAsync(uploaded_file);
         }
-        // If the file already exists, we catch the exception and do not upload it
+
         catch (RequestFailedException ex)
-           when (ex.ErrorCode == BlobErrorCode.BlobAlreadyExists)
-        {
-            _logger.LogError($"File with name {blob.FileName} already exists in container. Set another name to store the file in the container: '{_storageContainerName}.'");
-            response.Status = $"File with name {blob.FileName} already exists. Please use another name to store your file.";
-            response.Error = true;
-            return response;
-        }
-        // If we get an unexpected error, we catch it here and return the error message
+            when (ex.ErrorCode == BlobErrorCode.BlobAlreadyExists)
+            {
+                _logger.LogError($"File with name {blob.FileName} already exists in container. Set another name to store the file in the container: '{_storageContainerName}.'");
+                response.Status = $"File with name {blob.FileName} already exists. Please use another name to store your file.";
+                response.Error = true;
+                return response;
+            }
         catch (RequestFailedException ex)
         {
-            // Log error to console and create a new response we can return to the requesting method
             _logger.LogError($"Unhandled Exception. ID: {ex.StackTrace} - Message: {ex.Message}");
             response.Status = $"Unexpected error: {ex.StackTrace}. Check log with StackTrace ID.";
             response.Error = true;
             return response;
         }
 
-        // Return the BlobUploadResponse object
         return response;
     }
 
     public async Task<BlobDTO> DownloadAsync(string blobFilename)
     {
-        // Get a reference to a container named in appsettings.json
         BlobContainerClient client = new BlobContainerClient(_storageConnectionString, _storageContainerName);
 
         try
         {
-            // Get a reference to the blob uploaded earlier from the API in the container from configuration settings
             BlobClient file = client.GetBlobClient(blobFilename);
 
-            // Check if the file exists in the container
             if (await file.ExistsAsync())
             {
                 var data = await file.OpenReadAsync();
                 Stream blobContent = data;
 
-                // Download the file details async
                 var content = await file.DownloadContentAsync();
 
-                // Add data to variables in order to return a BlobDto
                 string name = blobFilename;
                 string contentType = content.Value.Details.ContentType;
 
-                // Create new BlobDto with blob data from variables
                 return new BlobDTO { Content = blobContent, Name = name, ContentType = contentType };
             }
         }
         catch (RequestFailedException ex)
             when (ex.ErrorCode == BlobErrorCode.BlobNotFound)
         {
-            // Log error to console
             _logger.LogError($"File {blobFilename} was not found.");
         }
 
-        // File does not exist, return null and handle that in requesting method
         return null;
     }
 
@@ -171,48 +183,16 @@ public class FileManager : IFileManager
 
         try
         {
-            // Delete the file
             await file.DeleteAsync();
         }
         catch (RequestFailedException ex)
             when (ex.ErrorCode == BlobErrorCode.BlobNotFound)
         {
-            // File did not exist, log to console and return new response to requesting method
             _logger.LogError($"File {blobFilename} was not found.");
             return new BlobResponseDTO { Error = true, Status = $"File with name {blobFilename} not found." };
         }
 
-        // Return a new BlobResponseDto to the requesting method
         return new BlobResponseDTO { Error = false, Status = $"File: {blobFilename} has been successfully deleted." };
 
     }
-    // TODO: Make the size of the image larger (use Scaleway)
-    //public async Task<ImageViewDTO> UploadImage(byte[] file, long fileSize, long postId)
-    //{
-    //    var image = new Image();
-    //    // Upload the file if less than 2 MB
-    //    if (fileSize < 2097152)
-    //    {
-    //        image.Name = $"Image:{Guid.NewGuid()}.img";
-    //        image.Content = file;
-    //        image.PostId = postId;
-
-    //        await _imageRepository.AddAsync(image);
-    //    }
-    //    else
-    //    {
-    //        throw new Exception("File size is too large");
-    //    }
-
-    //    var returndata = await _imageRepository
-    //        .AsQueryable()
-    //        .Where(x => x.Name == image.Name)
-    //        .Select(x => new ImageViewDTO()
-    //        {
-    //            Name = x.Name,
-    //            ImageBase64 = String.Format("data:image/png;base64,{0}", Convert.ToBase64String(x.Content))
-    //        }).FirstOrDefaultAsync();
-
-    //    return returndata;
-    //}
 }

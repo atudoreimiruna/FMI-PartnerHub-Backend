@@ -42,7 +42,12 @@ public class PartnerConfiguration : IEntityTypeConfiguration<Partner>
            .HasMaxLength(100);
 
         builder
-            .HasMany(c => c.Posts)
+            .HasMany(r => r.Files)
+            .WithOne(r => r.Partner)
+            .HasForeignKey(r => r.PartnerId);
+
+        builder
+            .HasMany(c => c.Events)
             .WithOne(n => n.Partner)
             .HasForeignKey(n => n.PartnerId)
             .OnDelete(DeleteBehavior.Cascade);
