@@ -1,5 +1,6 @@
 ﻿using Licenta.Core.Entities.Base;
 using Licenta.Core.Enums;
+using System.Collections.Generic;
 
 namespace Licenta.Core.Entities;
 
@@ -18,5 +19,6 @@ public class Job : BaseEntity
     public string Skills { get; set; }
     public long? PartnerId { get; set; }
     public Partner Partner { get; set; }
+    public virtual ICollection<StudentJob> StudentJobs { get; set; } = new List<StudentJob>();
 }
 

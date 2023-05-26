@@ -3,6 +3,7 @@ using System;
 using Licenta.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Licenta.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230526135614_FileEntityEnum")]
+    partial class FileEntityEnum
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -446,21 +449,6 @@ namespace Licenta.Infrastructure.Migrations
                     b.ToTable("Students");
                 });
 
-            modelBuilder.Entity("Licenta.Core.Entities.StudentJob", b =>
-                {
-                    b.Property<long>("StudentId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("JobId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("StudentId", "JobId");
-
-                    b.HasIndex("JobId");
-
-                    b.ToTable("StudentJobs");
-                });
-
             modelBuilder.Entity("Licenta.Core.Entities.User", b =>
                 {
                     b.Property<long>("Id")
@@ -682,23 +670,6 @@ namespace Licenta.Infrastructure.Migrations
                     b.Navigation("Partner");
                 });
 
-            modelBuilder.Entity("Licenta.Core.Entities.StudentJob", b =>
-                {
-                    b.HasOne("Licenta.Core.Entities.Job", "Job")
-                        .WithMany("StudentJobs")
-                        .HasForeignKey("JobId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("Licenta.Core.Entities.Student", "Student")
-                        .WithMany("StudentJobs")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("Job");
-
-                    b.Navigation("Student");
-                });
-
             modelBuilder.Entity("Licenta.Core.Entities.UserRole", b =>
                 {
                     b.HasOne("Licenta.Core.Entities.Role", null)
@@ -767,11 +738,6 @@ namespace Licenta.Infrastructure.Migrations
                     b.Navigation("Files");
                 });
 
-            modelBuilder.Entity("Licenta.Core.Entities.Job", b =>
-                {
-                    b.Navigation("StudentJobs");
-                });
-
             modelBuilder.Entity("Licenta.Core.Entities.Partner", b =>
                 {
                     b.Navigation("Events");
@@ -789,8 +755,6 @@ namespace Licenta.Infrastructure.Migrations
             modelBuilder.Entity("Licenta.Core.Entities.Student", b =>
                 {
                     b.Navigation("Files");
-
-                    b.Navigation("StudentJobs");
                 });
 
             modelBuilder.Entity("Licenta.Core.Entities.User", b =>

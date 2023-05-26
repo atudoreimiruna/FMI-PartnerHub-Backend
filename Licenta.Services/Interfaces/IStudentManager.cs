@@ -9,4 +9,5 @@ public interface IStudentManager
     Task<StudentViewDTO> UpdateAsync(StudentPutDTO studentDto);
     Task<StudentViewDTO> GetStudentProfileByIdAsync(long id);
     Task<StudentViewDTO> GetStudentProfileByEmailAsync(string email);
+    Task<StudentViewDTO> UpdateJobAsync(StudentJobPutDTO studentDto);
 }

@@ -24,6 +24,7 @@ public class FileManager : IFileManager
     private readonly IRepository<Core.Entities.File> _fileRepository;
     private readonly IRepository<Event> _eventRepository;
     private readonly IRepository<Partner> _partnerRepository;
+    private readonly IRepository<Student> _studentRepository;
     private readonly IMapper _mapper;
     private readonly ILogger<FileManager> _logger;
 
@@ -33,7 +34,8 @@ public class FileManager : IFileManager
         IRepository<Core.Entities.File> fileRepository,
         IMapper mapper,
         IRepository<Event> eventRepository,
-        IRepository<Partner> partnerRepository)
+        IRepository<Partner> partnerRepository,
+        IRepository<Student> studentRepository)
     {
         _storageConnectionString = configuration.GetValue<string>("BlobConnectionString");
         _storageContainerName = configuration.GetValue<string>("BlobContainerName");
@@ -42,6 +44,7 @@ public class FileManager : IFileManager
         _logger = logger;
         _eventRepository = eventRepository;
         _partnerRepository = partnerRepository;
+        _studentRepository = studentRepository;
     }
 
     // TODO: get by id method
@@ -122,6 +125,22 @@ public class FileManager : IFileManager
                     PartnerId = partner.Id
                 };
                 await _partnerRepository.UpdateAsync(partner);
+            }
+            else if (entity.Equals(FileEntityEnum.Student))
+            {
+                var student = await _studentRepository.FindByIdAsync(id);
+                if (student == null)
+                {
+                    throw new CustomNotFoundException("Student Not Found");
+                }
+                uploaded_file = new Core.Entities.File
+                {
+                    Name = blob.FileName,
+                    Uri = response.Blob.Uri,
+                    Entity = FileEntityEnum.Student,
+                    StudentId = student.Id
+                };
+                await _studentRepository.UpdateAsync(student);
             }
             await _fileRepository.AddAsync(uploaded_file);
         }

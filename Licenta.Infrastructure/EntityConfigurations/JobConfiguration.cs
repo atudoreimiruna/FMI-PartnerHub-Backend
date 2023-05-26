@@ -33,6 +33,13 @@ public class JobConfiguration : IEntityTypeConfiguration<Job>
             .IsRequired(false)
             .OnDelete(DeleteBehavior.SetNull);
 
+        builder
+            .HasMany(c => c.StudentJobs)
+            .WithOne(cs => cs.Job)
+            .HasForeignKey(cs => cs.JobId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.NoAction);
+
         builder.HasData
         (
             new Job

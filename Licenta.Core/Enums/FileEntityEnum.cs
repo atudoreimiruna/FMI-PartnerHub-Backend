@@ -3,5 +3,6 @@
 public enum FileEntityEnum
 {
     Event,
-    Partner
+    Partner,
+    Student
 }

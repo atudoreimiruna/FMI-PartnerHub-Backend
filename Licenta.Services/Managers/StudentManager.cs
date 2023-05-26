@@ -13,13 +13,16 @@ namespace Licenta.Services.Managers;
 public class StudentManager : IStudentManager
 {
     private readonly IRepository<Student> _studentRepository;
+    private readonly IRepository<StudentJob> _studentJobRepository;
     private readonly IMapper _mapper;
 
     public StudentManager(
         IRepository<Student> studentRepository,
+        IRepository<StudentJob> studentJobRepository,
         IMapper mapper)
     {
         _studentRepository = studentRepository;
+        _studentJobRepository = studentJobRepository;
         _mapper = mapper;
     }
 
@@ -27,6 +30,10 @@ public class StudentManager : IStudentManager
     {
         var student = await _studentRepository
             .AsQueryable()
+            .Include(x => x.Files)
+            .Include(x => x.StudentJobs)
+            .ThenInclude(x => x.Job)
+            .ThenInclude(x => x.Partner)
             .Where(x => x.Id == id)
             .FirstOrDefaultAsync();
 
@@ -41,6 +48,10 @@ public class StudentManager : IStudentManager
     {
         var student = await _studentRepository
             .AsQueryable()
+            .Include(x => x.Files)
+            .Include(x => x.StudentJobs)
+            .ThenInclude(x => x.Job)
+            .ThenInclude(x => x.Partner)
             .Where(x => x.Email == email)
             .FirstOrDefaultAsync();
 
@@ -53,12 +64,44 @@ public class StudentManager : IStudentManager
 
     public async Task<StudentViewDTO> UpdateAsync(StudentPutDTO studentDto)
     {
-        var student = await _studentRepository.FindByIdAsync(studentDto.Id);
+        var student = await _studentRepository
+            .AsQueryable()
+            .Include(x => x.Files)
+            .Include(x => x.StudentJobs)
+            .ThenInclude(x => x.Job)
+            .ThenInclude(x => x.Partner)
+            .Where(x => x.Id == studentDto.Id)
+            .FirstOrDefaultAsync();
 
         if (student == null)
         {
             throw new CustomNotFoundException("Student Not Found");
         }
+
+        _mapper.Map(studentDto, student);
+        await _studentRepository.UpdateAsync(student);
+
+        return await GetStudentProfileByIdAsync(studentDto.Id);
+    }
+
+    public async Task<StudentViewDTO> UpdateJobAsync(StudentJobPutDTO studentDto)
+    {
+        var student = await _studentRepository
+            .AsQueryable()
+            .Include(x => x.Files)
+            .Include(x => x.StudentJobs)
+            .ThenInclude(x => x.Job)
+            .ThenInclude(x => x.Partner)
+            .Where(x => x.Id == studentDto.Id)
+            .FirstOrDefaultAsync();
+
+        if (student == null)
+        {
+            throw new CustomNotFoundException("Student Not Found");
+        }
+
+        var studentJob = new StudentJob { StudentId = studentDto.Id, JobId = studentDto.JobId };
+        await _studentJobRepository.AddAsync(studentJob);
 
         _mapper.Map(studentDto, student);
         await _studentRepository.UpdateAsync(student);

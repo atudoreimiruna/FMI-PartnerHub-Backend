@@ -28,6 +28,7 @@ public class AppDbContext : IdentityDbContext<
     public DbSet<Core.Entities.File> Files { get; set; }
     public DbSet<Job> Jobs { get; set; }
     public DbSet<Student> Students { get; set; }
+    public DbSet<StudentJob> StudentJobs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -40,5 +41,6 @@ public class AppDbContext : IdentityDbContext<
         modelBuilder.ApplyConfiguration(new FileConfiguration());
         modelBuilder.ApplyConfiguration(new JobConfiguration());
         modelBuilder.ApplyConfiguration(new StudentConfiguration());
+        modelBuilder.ApplyConfiguration(new StudentJobConfiguration());
     }
 }

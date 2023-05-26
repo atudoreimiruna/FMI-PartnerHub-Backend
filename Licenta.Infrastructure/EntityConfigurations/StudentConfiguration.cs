@@ -49,5 +49,12 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
             .HasMany(r => r.Files)
             .WithOne(r => r.Student)
             .HasForeignKey(r => r.StudentId);
+
+        builder
+            .HasMany(c => c.StudentJobs)
+            .WithOne(cs => cs.Student)
+            .HasForeignKey(cs => cs.StudentId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

@@ -7,11 +7,18 @@ using Licenta.Core.Entities;
 using Microsoft.Extensions.Configuration;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using Microsoft.AspNetCore.Server.HttpSys;
+using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Licenta.Api.Controllers;
 
 [Route("api/auth")]
 [ApiController]
+[AllowAnonymous]
 public class AuthController : ControllerBase
 {
     private readonly IAuthManager _authManager;
@@ -115,12 +122,12 @@ public class AuthController : ControllerBase
     //    return BadRequest("Error logging in with Microsoft account");
     //}
 
-    //[HttpPost("Register")]
-    //public async Task<IActionResult> Register([FromBody] RegisterModel registerModel)
-    //{
-    //    var result = await _authManager.Register(registerModel);
-    //    return result ? Ok(result) : BadRequest(result);
-    //}
+    [HttpPost("Register")]
+    public async Task<IActionResult> Register([FromBody] RegisterModel registerModel)
+    {
+        var result = await _authManager.Register(registerModel);
+        return result ? Ok(result) : BadRequest(result);
+    }
 
     //[HttpPost("Login")]
     //public async Task<IActionResult> Login([FromBody] LoginModel loginModel)
@@ -136,11 +143,70 @@ public class AuthController : ControllerBase
     //        return BadRequest("Failed to login");
     //    }
     //}
-    
+
     //[HttpPost("Refresh")]
     //public async Task<IActionResult> Refresh([FromBody] RefreshModel refreshModel)
     //{
     //    var result = await _authManager.Refresh(refreshModel);
     //    return !result.Contains("Bad") ? Ok(result) : BadRequest("Failed to refresh");
     //}
+
+    [HttpPost]
+    [Authorize(AuthenticationSchemes=MicrosoftAccountDefaults.AuthenticationScheme)]
+    public async Task<IActionResult> ExternalSignIn([FromQuery] string token)
+    {
+        var x = await _signInManager.GetExternalLoginInfoAsync();
+
+        var res = await _signInManager.ExternalLoginSignInAsync(
+            MicrosoftAccountDefaults.AuthenticationScheme,
+            "live.com#atudorei.miruna@yahoo.ro",
+            true);
+
+        if (res.Succeeded)
+        {
+            // TODO: GENERATE ACCESS TOKEN
+            return Ok();
+
+        }
+        var user = new User
+        {
+            Email = "atudorei.miruna@yahoo.ro",
+            UserName = "atudorei.miruna@yahoo.ro"
+        };
+        var result = await _userManager.CreateAsync(user);
+
+        var login = await _userManager.AddLoginAsync(user, new UserLoginInfo(MicrosoftAccountDefaults.AuthenticationScheme, "live.com#atudorei.miruna@yahoo.ro", MicrosoftAccountDefaults.AuthenticationScheme));
+
+        return Unauthorized();
+    }
+
+    [HttpPost("signin")]
+    public async Task<IActionResult> SignIn()
+    {
+        var properties = new AuthenticationProperties
+        {
+            RedirectUri = "/auth/callback",
+            Items =
+            {
+                { "Scheme", OpenIdConnectDefaults.AuthenticationScheme },
+            },
+        };
+
+        return Challenge(properties);
+    }
+
+    [HttpGet("Callback")]
+    public IActionResult Callback()
+    {
+        return Ok();
+    }
+
+    [HttpGet("SignOut")]
+    public IActionResult SignOut()
+    {
+        return SignOut(
+            new AuthenticationProperties { RedirectUri = "/" },
+            CookieAuthenticationDefaults.AuthenticationScheme,
+            OpenIdConnectDefaults.AuthenticationScheme);
+    }
 }

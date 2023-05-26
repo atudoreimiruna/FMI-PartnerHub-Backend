@@ -13,12 +13,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Collections.Generic;
 using Licenta.Core.Entities;
-using Microsoft.AspNetCore.Identity;
 using System.Text;
+using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 using Microsoft.Identity.Web;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.IdentityModel.Logging;
+using Microsoft.AspNetCore.Authentication;
 
 namespace Licenta.Api;
 
@@ -92,30 +93,74 @@ public class Startup
             });
         });
 
-        services.AddAuthentication(options =>
+        services.AddAuthentication().AddMicrosoftAccount(microsoftOptions =>
         {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-        })
-        .AddJwtBearer(options =>
-        {
-            options.Authority = "https://login.microsoftonline.com/20ed8f4e-52f7-4d77-bfc1-862ced77c351/v2.0";
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = false,
-                ValidIssuer = "https://login.microsoftonline.com/",
-                ValidateAudience = false,
-                ValidAudience = "f969fab1-6d79-42a0-96c0-32eb06cb8d0b",
-                ValidateIssuerSigningKey = true,
-                RequireSignedTokens = true,
-                RequireExpirationTime = true,
-                IssuerSigningKeys = new List<SecurityKey>
-                {
-                    new SymmetricSecurityKey(Encoding.ASCII.GetBytes("-KI3Q9nNR7bRofxmeZoXqbHZGew"))
-                }
-            };
+            microsoftOptions.ClientId = Configuration["Authentication:Microsoft:ClientId"];
+            microsoftOptions.ClientSecret = Configuration["Authentication:Microsoft:ClientSecret"];
         });
+
+        //services.AddAuthentication(AzureADDefaults.BearerAuthenticationScheme)
+        //    .AddAzureADBearer(options => Configuration.Bind("AzureAd", options));
+
+        //services.Configure<OpenIdConnectOptions>(AzureADDefaults.OpenIdScheme, options =>
+        //{
+        //    options.Authority = Configuration["AzureAd:Authority"];
+        //    options.ClientId = Configuration["AzureAd:ClientId"];
+        //    options.ClientSecret = Configuration["AzureAd:ClientSecret"];
+        //    options.CallbackPath = Configuration["AzureAd:CallbackPath"];
+        //    // Other configuration options as needed
+        //});
+
+
+        //services.AddMicrosoftIdentityWebAppAuthentication(Configuration)
+        //    .EnableTokenAcquisitionToCallDownstreamApi()
+        //    .AddInMemoryTokenCaches();
+
+        //services.AddAuthentication(options =>
+        //{
+        //    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        //    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        //    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        //})
+        //    .AddJwtBearer(options =>
+        //    {
+        //        options.Authority = "https://login.microsoftonline.com/20ed8f4e-52f7-4d77-bfc1-862ced77c351/v2.0";
+        //        options.Audience = "f969fab1-6d79-42a0-96c0-32eb06cb8d0b";
+        //        options.TokenValidationParameters = new TokenValidationParameters
+        //        {
+        //            ValidateIssuer = true,
+        //            ValidIssuer = "https://login.microsoftonline.com/20ed8f4e-52f7-4d77-bfc1-862ced77c351/v2.0",
+        //            ValidateAudience = true,
+        //            ValidAudience = "f969fab1-6d79-42a0-96c0-32eb06cb8d0b",
+        //            ValidateLifetime = true
+        //        };
+        //    });
+
+        //    options =>
+        //{
+        //    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        //    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        //    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        //}
+        //)
+        //.AddJwtBearer(options =>
+        //{
+        //    options.Authority = "https://login.microsoftonline.com/20ed8f4e-52f7-4d77-bfc1-862ced77c351/v2.0";
+        //    options.TokenValidationParameters = new TokenValidationParameters
+        //    {
+        //        ValidateIssuer = false,
+        //        ValidIssuer = "https://login.microsoftonline.com/",
+        //        ValidateAudience = false,
+        //        ValidAudience = "f969fab1-6d79-42a0-96c0-32eb06cb8d0b",
+        //        ValidateIssuerSigningKey = true,
+        //        RequireSignedTokens = true,
+        //        RequireExpirationTime = true,
+        //        IssuerSigningKeys = new List<SecurityKey>
+        //        {
+        //            new SymmetricSecurityKey(Encoding.ASCII.GetBytes("-KI3Q9nNR7bRofxmeZoXqbHZGew"))
+        //        }
+        //    };
+        //});
 
 
         //services.AddAuthentication(

@@ -36,6 +36,13 @@ public class StudentController : ControllerBase
         return Ok(student);
     }
 
+    [HttpPut("job")]
+    public async Task<IActionResult> UpdateJobAsync([FromBody] StudentJobPutDTO studentDto)
+    {
+        var student = await _studentManager.UpdateJobAsync(studentDto);
+        return Ok(student);
+    }
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteStudent([FromRoute] long id)
     {

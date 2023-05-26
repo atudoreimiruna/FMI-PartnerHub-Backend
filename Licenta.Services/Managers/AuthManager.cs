@@ -8,18 +8,18 @@ namespace Licenta.Services.Managers;
 
 public class AuthManager : IAuthManager
 {
-    //private readonly UserManager<User> _userManager;
-    //private readonly SignInManager<User> _signInManager;
-    //private readonly ITokenHelper _tokenHelper;
+    private readonly UserManager<User> _userManager;
+    private readonly SignInManager<User> _signInManager;
+    private readonly ITokenHelper _tokenHelper;
 
-    //public AuthManager(UserManager<User> userManager,
-    //    SignInManager<User> signInManager,
-    //    ITokenHelper tokenHelper)
-    //{
-    //    _userManager = userManager;
-    //    _signInManager = signInManager;
-    //    _tokenHelper = tokenHelper;
-    //}
+    public AuthManager(UserManager<User> userManager,
+        SignInManager<User> signInManager,
+        ITokenHelper tokenHelper)
+    {
+        _userManager = userManager;
+        _signInManager = signInManager;
+        _tokenHelper = tokenHelper;
+    }
 
     //public async Task<LoginResult> Login(LoginModel loginModel)
     //{
@@ -53,29 +53,29 @@ public class AuthManager : IAuthManager
     //                Success = false
     //            };
     //    }
-        
+
     //}
 
-    //public async Task<bool> Register(RegisterModel registerModel)
-    //{
-    //     var user = new User
-    //    {
-    //        Email = registerModel.Email,
-    //        UserName = registerModel.Email
-    //    };
+    public async Task<bool> Register(RegisterModel registerModel)
+    {
+        var user = new User
+        {
+            Email = registerModel.Email,
+            UserName = registerModel.Email
+        };
 
-    //    var result = await _userManager.CreateAsync(user, registerModel.Password);
+        var result = await _userManager.CreateAsync(user, registerModel.Password);
 
-    //    if (result.Succeeded)
-    //    {
-    //        await _userManager.AddToRoleAsync(user, registerModel.Role);
-    //        return true;
-    //    }
-    //    else
-    //    {
-    //        return false;
-    //    }
-    //}
+        if (result.Succeeded)
+        {
+            await _userManager.AddToRoleAsync(user, registerModel.Role);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
     //public async Task<string> Refresh(RefreshModel refreshModel)
     //{

@@ -14,4 +14,5 @@ public class Student : BaseEntity
     public string Skill { get; set; }
     public string Description { get; set; }
     public virtual ICollection<File> Files { get; set; } = new List<File>();
+    public virtual ICollection<StudentJob> StudentJobs { get; set; } = new List<StudentJob>();
 }
