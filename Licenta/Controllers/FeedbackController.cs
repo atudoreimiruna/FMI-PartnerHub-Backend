@@ -17,24 +17,4 @@ public class FeedbackController : ControllerBase
         _context = context;
     }
 
-
-    [HttpPost("fromBody")]
-    public async Task<IActionResult> Create(FeedbackPostDTO model)
-    {
-        if (string.IsNullOrEmpty(model.Name))
-        {
-            return BadRequest("Invalid object. Model is null");
-        }
-
-        var feedback = new Feedback()
-        {
-            Name = model.Name,
-            Message = model.Message
-        };
-
-        await _context.Feedbacks.AddRangeAsync(feedback);
-        await _context.SaveChangesAsync();
-
-        return Ok();
-    }
 }

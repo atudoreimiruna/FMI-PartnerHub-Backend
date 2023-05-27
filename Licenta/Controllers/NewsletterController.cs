@@ -18,24 +18,5 @@ public class NewsletterController : ControllerBase
     {
         _context = context;
     }
-    
 
-    [HttpPost("fromBody")]
-    public async Task<IActionResult> CreateNewsLetter(NewsletterPostDTO model)
-    {
-        if (string.IsNullOrEmpty(model.Email))
-        {
-            return BadRequest("Invalid object. Model is null");
-        }
-
-        var abonat = new Newsletter()
-        {
-            Email = model.Email
-        };
-
-        await _context.Newsletters.AddRangeAsync(abonat);
-        await _context.SaveChangesAsync();
-
-        return Ok();
-    }
 }

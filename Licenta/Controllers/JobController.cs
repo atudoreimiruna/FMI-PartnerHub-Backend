@@ -3,7 +3,6 @@ using Licenta.Services.Interfaces;
 using System.Threading.Tasks;
 using Licenta.Services.DTOs.Job;
 using Licenta.Services.QueryParameters;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Licenta.Api.Controllers;
 

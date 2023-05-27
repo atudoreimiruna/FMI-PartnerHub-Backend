@@ -21,40 +21,40 @@ public class AuthManager : IAuthManager
         _tokenHelper = tokenHelper;
     }
 
-    //public async Task<LoginResult> Login(LoginModel loginModel)
-    //{
-    //    var user = await _userManager.FindByEmailAsync(loginModel.Email);
-    //    if (user == null)
-    //        return new LoginResult
-    //        {
-    //            Success = false
-    //        };
-    //    else
-    //    {
-    //        var result = await _signInManager.CheckPasswordSignInAsync(user, loginModel.Password, false);
-    //        if (result.Succeeded)
-    //        {
-    //            var token = await _tokenHelper.CreateAccessToken(user);
-    //            var refreshToken = _tokenHelper.CreateRefreshToken();
+    public async Task<LoginResult> Login(LoginModel loginModel)
+    {
+        var user = await _userManager.FindByEmailAsync(loginModel.Email);
+        if (user == null)
+            return new LoginResult
+            {
+                Success = false
+            };
+        else
+        {
+            //var result = await _signInManager.CheckPasswordSignInAsync(user, loginModel.Password, false);
+            //if (result.Succeeded)
+            //{
+                var token = await _tokenHelper.CreateAccessToken(user);
+                var refreshToken = _tokenHelper.CreateRefreshToken();
 
-    //            user.RefreshToken = refreshToken;
-    //            await _userManager.UpdateAsync(user);
+                user.RefreshToken = refreshToken;
+                await _userManager.UpdateAsync(user);
 
-    //            return new LoginResult
-    //            {
-    //                Success = true,
-    //                AccessToken = token,
-    //                RefreshToken = refreshToken
-    //            };
-    //        }
-    //        else
-    //            return new LoginResult
-    //            {
-    //                Success = false
-    //            };
-    //    }
+                return new LoginResult
+                {
+                    Success = true,
+                    AccessToken = token,
+                    RefreshToken = refreshToken
+                };
+            //}
+            //else
+            //    return new LoginResult
+            //    {
+            //        Success = false
+            //    };
+        }
 
-    //}
+    }
 
     public async Task<bool> Register(RegisterModel registerModel)
     {
@@ -64,7 +64,7 @@ public class AuthManager : IAuthManager
             UserName = registerModel.Email
         };
 
-        var result = await _userManager.CreateAsync(user, registerModel.Password);
+        var result = await _userManager.CreateAsync(user);
 
         if (result.Succeeded)
         {
@@ -77,18 +77,18 @@ public class AuthManager : IAuthManager
         }
     }
 
-    //public async Task<string> Refresh(RefreshModel refreshModel)
-    //{
-    //    var principal = _tokenHelper.GetPrincipalFromExpiredToken(refreshModel.AccessToken);
-    //    var username = principal.Identity.Name;
+    public async Task<string> Refresh(RefreshModel refreshModel)
+    {
+        var principal = _tokenHelper.GetPrincipalFromExpiredToken(refreshModel.AccessToken);
+        var username = principal.Identity.Name;
 
-    //    var user = await _userManager.FindByEmailAsync(username);
+        var user = await _userManager.FindByEmailAsync(username);
 
-    //    if (user.RefreshToken != refreshModel.RefreshToken)
-    //        return "Bad Refresh";
+        if (user.RefreshToken != refreshModel.RefreshToken)
+            return "Bad Refresh";
 
-    //    var newJwtToken = await _tokenHelper.CreateAccessToken(user);
+        var newJwtToken = await _tokenHelper.CreateAccessToken(user);
 
-    //    return newJwtToken;
-    //} 
+        return newJwtToken;
+    }
 }

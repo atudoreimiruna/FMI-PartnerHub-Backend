@@ -9,17 +9,9 @@ using Licenta.Infrastructure;
 using Licenta.Infrastructure.Seeders;
 using AutoMapper;
 using Licenta.Services.AutoMapper;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using System.Collections.Generic;
 using Licenta.Core.Entities;
-using System.Text;
-using Microsoft.AspNetCore.Http;
-using System.Threading.Tasks;
-using Microsoft.Identity.Web;
-using Microsoft.AspNetCore.Authentication.AzureAD.UI;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
 
 namespace Licenta.Api;
 
@@ -45,7 +37,6 @@ public class Startup
                 });
         });
 
-        // TODO: sterge addnwetonsoftjson
         services
             .AddControllers()
             .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
@@ -217,9 +208,8 @@ public class Startup
         //});
 
         services.AddIdentity<User, Role>()
-           .AddEntityFrameworkStores<AppDbContext>();
-         //.AddDefaultTokenProviders();
-
+           .AddEntityFrameworkStores<AppDbContext>()
+           .AddDefaultTokenProviders();
 
         var mapperConfig = new MapperConfiguration(options =>
         {

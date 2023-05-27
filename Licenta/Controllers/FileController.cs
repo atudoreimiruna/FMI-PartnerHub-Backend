@@ -23,7 +23,7 @@ public class FileController : ControllerBase
     {
         List<BlobDTO>? files = await _imageManager.ListAsync();
 
-        return StatusCode(StatusCodes.Status200OK, files);
+        return Ok(files);
     }
 
     [HttpPost("{entity}/{id}")]
@@ -31,14 +31,7 @@ public class FileController : ControllerBase
     {
         BlobResponseDTO? response = await _imageManager.UploadAsync(entity, id, file);
 
-        if (response.Error == true)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, response.Status);
-        }
-        else
-        {
-            return StatusCode(StatusCodes.Status200OK, response);
-        }
+        return Ok(response);
     }
 
     [HttpGet("{filename}")]
@@ -46,14 +39,7 @@ public class FileController : ControllerBase
     {
         BlobDTO? file = await _imageManager.DownloadAsync(filename);
 
-        if (file == null)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, $"File {filename} could not be downloaded.");
-        }
-        else
-        {
-            return File(file.Content, file.ContentType, file.Name);
-        }
+        return Ok(File(file.Content, file.ContentType, file.Name));
     }
 
     [HttpDelete("filename")]
@@ -61,14 +47,7 @@ public class FileController : ControllerBase
     {
         BlobResponseDTO response = await _imageManager.DeleteAsync(filename);
 
-        if (response.Error == true)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, response.Status);
-        }
-        else
-        {
-            return StatusCode(StatusCodes.Status200OK, response.Status);
-        }
+        return Ok();
     }
 }
 
