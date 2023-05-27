@@ -10,4 +10,7 @@ public class PartnerPutDTO
     public string Phone { get; set; }
     public string Email { get; set; }
     public string Social { get; set; }
+    public string MainImageUrl { get; set; }
+    public string LogoImageUrl { get; set; }
+    public string ProfileImageUrl { get; set; }
 }

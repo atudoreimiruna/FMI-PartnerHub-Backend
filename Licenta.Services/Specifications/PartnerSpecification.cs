@@ -34,7 +34,9 @@ public class PartnerSpecification : Specification<Partner>
         }
 
         AddInclude(x => x
-           .Include(x => x.Jobs));
+           .Include(x => x.Jobs)
+           .Include(x => x.Events)
+           .Include(x => x.Files));
 
         AddPagination(parameters.PageNumber, parameters.PageSize);
     }

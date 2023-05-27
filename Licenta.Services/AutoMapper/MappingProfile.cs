@@ -2,6 +2,7 @@
 using Licenta.Core.Entities;
 using Licenta.Core.Extensions.PagedList;
 using Licenta.Services.DTOs.Blob;
+using Licenta.Services.DTOs.Event;
 using Licenta.Services.DTOs.Job;
 using Licenta.Services.DTOs.Partner;
 using Licenta.Services.DTOs.Student;
@@ -31,6 +32,15 @@ public class MappingProfile : Profile
             .ReverseMap();
         CreateMap<Partner, PartnerPutDTO>()
             .ReverseMap()
+            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+        CreateMap<Event, EventPostDTO>().ReverseMap();
+        CreateMap<Event, EventViewDTO>()
+            .ForMember(dest => dest.Files, opt => opt.MapFrom(src => src.Files))
+            .ReverseMap();
+        CreateMap<Event, EventPutDTO>()
+            .ReverseMap()
+            .ForMember(dest => dest.Date, opt => opt.Ignore())
             .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
         CreateMap<Job, JobPostDTO>().ReverseMap();

@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Identity;
 using Licenta.Core.Entities;
 using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.AzureAD.UI;
+using Microsoft.Identity.Web;
+using System;
 
 namespace Licenta.Api.Controllers;
 
@@ -56,14 +59,15 @@ public class AuthController : ControllerBase
         return !result.Contains("Bad") ? Ok(result) : BadRequest("Failed to refresh");
     }
 
+    // TODO: create user in the student table after login succeded
     [HttpPost]
-   // [Authorize(AuthenticationSchemes = MicrosoftAccountDefaults.AuthenticationScheme)]
+    // [Authorize(AuthenticationSchemes = MicrosoftAccountDefaults.AuthenticationScheme)]
     public async Task<IActionResult> ExternalSignIn([FromQuery] string token)
     {
         var x = await _signInManager.GetExternalLoginInfoAsync();
 
         var res = await _signInManager.ExternalLoginSignInAsync(
-            MicrosoftAccountDefaults.AuthenticationScheme,
+            Constants.AzureAd,
             "miruna.atudorei@s.unibuc.ro",
             true);
 

@@ -1,4 +1,5 @@
 ﻿using Licenta.Core.Enums;
+using System;
 
 namespace Licenta.Services.QueryParameters;
 
@@ -10,4 +11,5 @@ public class JobParameters : BaseParameters
     public int? MinExperience { get; set; }
     public int? MaxExperience { get; set; }
     public string PartnerName { get; set; }
+    public DateTime LastUpdated { get; set; }
 }

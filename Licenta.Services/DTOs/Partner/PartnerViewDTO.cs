@@ -15,5 +15,6 @@ public class PartnerViewDTO : BaseDto
     public string Social { get; set; }
     public string MainImageUrl { get; set; }
     public string LogoImageUrl { get; set; }
+    public string ProfileImageUrl { get; set; }
     public List<JobViewDTO> Jobs { get; set; }
 }

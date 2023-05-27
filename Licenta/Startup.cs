@@ -12,6 +12,10 @@ using Licenta.Services.AutoMapper;
 using System.Collections.Generic;
 using Licenta.Core.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.AzureAD.UI;
+using Microsoft.Identity.Web;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 
 namespace Licenta.Api;
 
@@ -84,11 +88,40 @@ public class Startup
             });
         });
 
+        //services.AddAuthentication().AddMicrosoftAccount(microsoftOptions =>
+        //{
+        //    microsoftOptions.ClientId = Configuration["Authentication:Microsoft:ClientId"];
+        //    microsoftOptions.ClientSecret = Configuration["Authentication:Microsoft:ClientSecret"];
+        //});
+
         services.AddAuthentication().AddMicrosoftAccount(microsoftOptions =>
         {
             microsoftOptions.ClientId = Configuration["Authentication:Microsoft:ClientId"];
             microsoftOptions.ClientSecret = Configuration["Authentication:Microsoft:ClientSecret"];
+        })
+        .AddMicrosoftIdentityWebApi(options =>
+        {
+            //options.
+        }, identityOptions =>
+        {
+            identityOptions.Instance = Configuration["AzureAd:Instance"];
+            identityOptions.ClientId = Configuration["AzureAd:ClientId"];
+            identityOptions.TenantId = Configuration["AzureAd:TenantId"];
         });
+
+
+        //services.AddAuthentication().AddAzureAD(options =>
+        //{
+        //    options.Instance = Configuration["AzureAd:Instance"];
+        //    options.ClientId = Configuration["AzureAd:ClientId"];
+        //    options.TenantId = Configuration["AzureAd:TenantId"];
+        //});
+
+        //AzureADDefaults.AuthenticationScheme,
+        //    AzureADDefaults.OpenIdScheme,
+        //    AzureADDefaults.CookieScheme,
+        //    AzureADDefaults.DisplayName,
+
 
         //services.AddAuthentication(AzureADDefaults.BearerAuthenticationScheme)
         //    .AddAzureADBearer(options => Configuration.Bind("AzureAd", options));
@@ -184,7 +217,14 @@ public class Startup
         //    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
         //}).AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"));
 
-        //services.AddMicrosoftIdentityWebApiAuthentication(Configuration.GetSection("AzureAd"));
+        //services.AddMicrosoftIdentityWebApiAuthentication(options =>
+        //{
+        //    options.Instance = Configuration["AzureAd:Instance"];
+        //    options.ClientId = Configuration["AzureAd:ClientId"];
+        //    options.TenantId = Configuration["AzureAd:TenantId"];
+        //});
+
+
         //services.AddEndpointsApiExplorer();
         //AzureADDefaults.JwtBearerAuthenticationScheme
 

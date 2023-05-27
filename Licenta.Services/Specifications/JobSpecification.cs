@@ -43,6 +43,10 @@ public class JobSpecification : Specification<Job>
                 AddOrderBy(x => x.Address);
                 break;
 
+            case "LastUpdated":
+                AddOrderBy(x => x.LastUpdated);
+                break;
+
             default:
                 break;
         }
@@ -57,12 +61,19 @@ public class JobSpecification : Specification<Job>
                 AddOrderByDescending(x => x.Address);
                 break;
 
+            case "LastUpdated":
+                AddOrderByDescending(x => x.LastUpdated);
+                break;
+
             default:
                 break;
         }
 
         AddInclude(x => x
-           .Include(x => x.Partner));
+           .Include(x => x.Partner)
+           .ThenInclude(x => x.Files)
+           .Include(x => x.StudentJobs)
+           .ThenInclude(x => x.Student));
 
        AddPagination(parameters.PageNumber, parameters.PageSize);
     }
