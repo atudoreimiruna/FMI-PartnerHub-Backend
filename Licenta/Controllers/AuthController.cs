@@ -120,3 +120,5 @@ public class AuthController : ControllerBase
     //        OpenIdConnectDefaults.AuthenticationScheme);
     //}
 }
+
+

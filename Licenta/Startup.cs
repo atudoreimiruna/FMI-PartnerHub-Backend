@@ -16,6 +16,11 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using Microsoft.Identity.Web;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Hangfire;
+using Hangfire.MySql;
+using Licenta.Services.Interfaces.External;
+using Licenta.External.Hangfire;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Licenta.Api;
 
@@ -88,26 +93,52 @@ public class Startup
             });
         });
 
+        services.AddAuthentication()
+            .AddMicrosoftAccount(microsoftOptions =>
+            {
+                microsoftOptions.ClientId = Configuration["Authentication:Microsoft:ClientId"]!;
+                microsoftOptions.ClientSecret = Configuration["Authentication:Microsoft:ClientSecret"]!;
+            })
+            .AddMicrosoftIdentityWebApi(options =>
+            {
+                options.Audience = Configuration["AzureAd:Audience"];
+                options.Authority = Configuration["AzureAd:Authority"];
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.IncludeErrorDetails = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                };
+            }, identityOptions =>
+            {
+                identityOptions.Instance = Configuration["AzureAd:Instance"]!;
+                identityOptions.ClientId = Configuration["AzureAd:ClientId"];
+                identityOptions.TenantId = Configuration["AzureAd:TenantId"];
+            },
+                Constants.AzureAd);
+
         //services.AddAuthentication().AddMicrosoftAccount(microsoftOptions =>
         //{
         //    microsoftOptions.ClientId = Configuration["Authentication:Microsoft:ClientId"];
         //    microsoftOptions.ClientSecret = Configuration["Authentication:Microsoft:ClientSecret"];
         //});
 
-        services.AddAuthentication().AddMicrosoftAccount(microsoftOptions =>
-        {
-            microsoftOptions.ClientId = Configuration["Authentication:Microsoft:ClientId"];
-            microsoftOptions.ClientSecret = Configuration["Authentication:Microsoft:ClientSecret"];
-        })
-        .AddMicrosoftIdentityWebApi(options =>
-        {
-            //options.
-        }, identityOptions =>
-        {
-            identityOptions.Instance = Configuration["AzureAd:Instance"];
-            identityOptions.ClientId = Configuration["AzureAd:ClientId"];
-            identityOptions.TenantId = Configuration["AzureAd:TenantId"];
-        });
+        //services.AddAuthentication().AddMicrosoftAccount(microsoftOptions =>
+        //{
+        //    microsoftOptions.ClientId = Configuration["Authentication:Microsoft:ClientId"];
+        //    microsoftOptions.ClientSecret = Configuration["Authentication:Microsoft:ClientSecret"];
+        //})
+        //.AddMicrosoftIdentityWebApi(options =>
+        //{
+        //    //options.
+        //}, identityOptions =>
+        //{
+        //    identityOptions.Instance = Configuration["AzureAd:Instance"];
+        //    identityOptions.ClientId = Configuration["AzureAd:ClientId"];
+        //    identityOptions.TenantId = Configuration["AzureAd:TenantId"];
+        //});
 
 
         //services.AddAuthentication().AddAzureAD(options =>
@@ -264,6 +295,17 @@ public class Startup
         mapperConfig.AssertConfigurationIsValid();
         IMapper mapper = mapperConfig.CreateMapper();
         services.AddSingleton(mapper);
+
+        services.AddHangfire(options =>
+        {
+            options.UseStorage(new MySqlStorage(Configuration.GetConnectionString("ConnString"), new MySqlStorageOptions
+            {
+                TablesPrefix = "__hangfire.",
+            }));
+        });
+        services.AddScoped<IHangfireManager, HangfireManager>();
+
+        services.AddHangfireServer();
     }
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DataSeeder initialSeed)
     {
@@ -272,6 +314,7 @@ public class Startup
             app.UseDeveloperExceptionPage();
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Licenta v1"));
+            app.UseHangfireDashboard("/hangfire");
         }
 
         app.UseHttpsRedirection();
@@ -290,5 +333,10 @@ public class Startup
         });
 
         initialSeed.CreateRoles();
+
+        //RecurringJob.AddOrUpdate<IHangfireManager>(
+        //    "Run once a day at midnight",
+        //    hangfireManager => hangfireManager.DropData(),
+        //    "0 0 * * *");
     }
 }
