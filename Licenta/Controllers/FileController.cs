@@ -39,10 +39,17 @@ public class FileController : ControllerBase
     {
         BlobDTO? file = await _imageManager.DownloadAsync(filename);
 
-        return Ok(File(file.Content, file.ContentType, file.Name));
+        if (file == null)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, $"File {filename} could not be downloaded.");
+        }
+        else
+        {
+            return File(file.Content, file.ContentType, file.Name);
+        }
     }
 
-    [HttpDelete("filename")]
+    [HttpDelete("{filename}")]
     public async Task<IActionResult> Delete([FromRoute] string filename)
     {
         BlobResponseDTO response = await _imageManager.DeleteAsync(filename);

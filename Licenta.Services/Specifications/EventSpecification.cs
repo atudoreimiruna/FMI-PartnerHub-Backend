@@ -28,6 +28,11 @@ public class EventSpecification : Specification<Event>
             AddCriteria(x => x.Partner.Name.ToLower().Contains(parameters.PartnerName.ToLower()));
         }
 
+        if (!string.IsNullOrEmpty(parameters.PartnerName))
+        {
+            AddCriteria(x => x.Partner.Id.Equals(parameters.PartnerId));
+        }
+
         switch (parameters.OrderBy)
         {
             case "LastUpdated":

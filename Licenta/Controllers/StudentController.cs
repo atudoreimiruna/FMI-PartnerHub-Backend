@@ -43,6 +43,13 @@ public class StudentController : ControllerBase
         return Ok(student);
     }
 
+    [HttpDelete("{studentId}/{jobId}")]
+    public async Task<IActionResult> DeleteStudentJob([FromRoute] long studentId, [FromRoute] long jobId)
+    {
+        await _studentManager.DeleteStudentJobAsync(studentId, jobId);
+        return Ok("StudentJob DELETED successfully");
+    }
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteStudent([FromRoute] long id)
     {

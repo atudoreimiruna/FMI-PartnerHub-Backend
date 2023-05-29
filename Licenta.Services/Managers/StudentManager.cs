@@ -109,6 +109,16 @@ public class StudentManager : IStudentManager
         return await GetStudentProfileByIdAsync(studentDto.Id);
     }
 
+    public async Task DeleteStudentJobAsync(long studentId, long jobId)
+    {
+        var studentJob = await _studentJobRepository.AsQueryable().Where(x => x.JobId == jobId && x.StudentId == studentId).FirstOrDefaultAsync();
+        if (studentJob == null)
+        {
+            throw new CustomNotFoundException("StudentJob Not Found");
+        }
+        await _studentJobRepository.RemoveAsync(studentJob);
+    }
+
     public async Task DeleteAsync(long id)
     {
         var student = await _studentRepository.FindByIdAsync(id);

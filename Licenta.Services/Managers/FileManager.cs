@@ -14,6 +14,8 @@ using Licenta.Services.DTOs.Blob;
 using Licenta.Core.Enums;
 using Licenta.Core.Entities;
 using Licenta.Services.Exceptions;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace Licenta.Services.Managers;
 
@@ -210,6 +212,17 @@ public class FileManager : IFileManager
             _logger.LogError($"File {blobFilename} was not found.");
             return new BlobResponseDTO { Error = true, Status = $"File with name {blobFilename} not found." };
         }
+
+        var fileToDelete = await _fileRepository
+            .AsQueryable()
+            .Where(x => x.Name == blobFilename)
+            .FirstOrDefaultAsync();
+
+        if (fileToDelete == null)
+        {
+            throw new CustomNotFoundException("File Not Found");
+        }
+        await _fileRepository.RemoveAsync(fileToDelete);
 
         return new BlobResponseDTO { Error = false, Status = $"File: {blobFilename} has been successfully deleted." };
 

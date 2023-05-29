@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Licenta.Core.Entities;
 using Licenta.Infrastructure;
-using System.Threading.Tasks;
-using Licenta.Services.DTOs.Feedback;
 
 namespace Licenta.Api.Controllers;
 

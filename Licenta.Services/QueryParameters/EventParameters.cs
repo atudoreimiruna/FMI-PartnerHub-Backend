@@ -9,5 +9,6 @@ public class EventParameters : BaseParameters
     public string Location { get; set; }
     public string Time { get; set; }
     public string PartnerName { get; set; }
+    public string PartnerId { get; set; }
     public DateTime LastUpdated { get; set; }
 }
