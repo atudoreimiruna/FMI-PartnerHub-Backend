@@ -3,6 +3,11 @@ using Licenta.Core.Entities;
 using Licenta.Services.DTOs.Auth;
 using Licenta.Services.Interfaces;
 using System.Threading.Tasks;
+using Microsoft.Identity.Web;
+using Licenta.Core.Enums;
+using Licenta.Services.DTOs.Student;
+using AutoMapper;
+using Licenta.Core.Interfaces;
 
 namespace Licenta.Services.Managers;
 
@@ -11,69 +16,82 @@ public class AuthManager : IAuthManager
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
     private readonly ITokenHelper _tokenHelper;
+    private readonly IRepository<Student> _studentRepository;
+    private readonly IMapper _mapper;
 
     public AuthManager(UserManager<User> userManager,
         SignInManager<User> signInManager,
+        IRepository<Student> studentRepository,
+        IMapper mapper,
         ITokenHelper tokenHelper)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _tokenHelper = tokenHelper;
+        _studentRepository = studentRepository;
+        _mapper = mapper;
     }
 
     public async Task<LoginResult> Login(LoginModel loginModel)
     {
         var user = await _userManager.FindByEmailAsync(loginModel.Email);
         if (user == null)
-            return new LoginResult
-            {
-                Success = false
-            };
-        else
         {
-            //var result = await _signInManager.CheckPasswordSignInAsync(user, loginModel.Password, false);
-            //if (result.Succeeded)
-            //{
-                var token = await _tokenHelper.CreateAccessToken(user);
-                var refreshToken = _tokenHelper.CreateRefreshToken();
-
-                user.RefreshToken = refreshToken;
-                await _userManager.UpdateAsync(user);
-
+            user = new User
+            {
+                Email = loginModel.Email,
+                UserName = loginModel.Email
+            };
+            var userResult = await _userManager.CreateAsync(user);
+            if (!userResult.Succeeded)
+            {
                 return new LoginResult
                 {
-                    Success = true,
-                    AccessToken = token,
-                    RefreshToken = refreshToken
+                    Success = false
                 };
-            //}
-            //else
-            //    return new LoginResult
-            //    {
-            //        Success = false
-            //    };
+            }
+            else
+            {
+                await _userManager.AddToRoleAsync(user, RolesEnum.User.ToString());
+
+                var studentDto = new StudentPostDTO
+                {
+                    Email = loginModel.Email,
+                    Name = loginModel.Name
+                };
+                var student = _mapper.Map<Student>(studentDto);
+
+                await _studentRepository.AddAsync(student);
+            }
         }
 
-    }
-
-    public async Task<bool> Register(RegisterModel registerModel)
-    {
-        var user = new User
-        {
-            Email = registerModel.Email,
-            UserName = registerModel.Email
-        };
-
-        var result = await _userManager.CreateAsync(user);
+        var result = await _signInManager.ExternalLoginSignInAsync(
+            Constants.AzureAd,
+            loginModel.Email,
+            true);
 
         if (result.Succeeded)
         {
-            await _userManager.AddToRoleAsync(user, registerModel.Role);
-            return true;
+            var accessToken = await _tokenHelper.CreateAccessToken(user);
+            var refreshToken = _tokenHelper.CreateRefreshToken();
+            return new LoginResult
+            {
+                Success = true,
+                AccessToken = accessToken,
+                RefreshToken = refreshToken
+            };
         }
         else
         {
-            return false;
+            await _userManager.AddLoginAsync(user, new UserLoginInfo(Constants.AzureAd, loginModel.Email, Constants.AzureAd));
+            var accessToken = await _tokenHelper.CreateAccessToken(user);
+            var refreshToken = _tokenHelper.CreateRefreshToken();
+            return new LoginResult
+            {
+                Success = true,
+                AccessToken = accessToken,
+                RefreshToken = refreshToken
+            };
         }
     }
 
@@ -85,7 +103,9 @@ public class AuthManager : IAuthManager
         var user = await _userManager.FindByEmailAsync(username);
 
         if (user.RefreshToken != refreshModel.RefreshToken)
+        {
             return "Bad Refresh";
+        }
 
         var newJwtToken = await _tokenHelper.CreateAccessToken(user);
 

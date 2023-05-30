@@ -12,15 +12,16 @@ using Licenta.Services.AutoMapper;
 using System.Collections.Generic;
 using Licenta.Core.Entities;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using Microsoft.Identity.Web;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Hangfire;
 using Hangfire.MySql;
 using Licenta.Services.Interfaces.External;
 using Licenta.External.Hangfire;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
+using System.Threading.Tasks;
+using Licenta.External.Authorization;
 
 namespace Licenta.Api;
 
@@ -117,170 +118,51 @@ public class Startup
                 identityOptions.ClientId = Configuration["AzureAd:ClientId"];
                 identityOptions.TenantId = Configuration["AzureAd:TenantId"];
             },
-                Constants.AzureAd);
-
-        //services.AddAuthentication().AddMicrosoftAccount(microsoftOptions =>
-        //{
-        //    microsoftOptions.ClientId = Configuration["Authentication:Microsoft:ClientId"];
-        //    microsoftOptions.ClientSecret = Configuration["Authentication:Microsoft:ClientSecret"];
-        //});
-
-        //services.AddAuthentication().AddMicrosoftAccount(microsoftOptions =>
-        //{
-        //    microsoftOptions.ClientId = Configuration["Authentication:Microsoft:ClientId"];
-        //    microsoftOptions.ClientSecret = Configuration["Authentication:Microsoft:ClientSecret"];
-        //})
-        //.AddMicrosoftIdentityWebApi(options =>
-        //{
-        //    //options.
-        //}, identityOptions =>
-        //{
-        //    identityOptions.Instance = Configuration["AzureAd:Instance"];
-        //    identityOptions.ClientId = Configuration["AzureAd:ClientId"];
-        //    identityOptions.TenantId = Configuration["AzureAd:TenantId"];
-        //});
-
-
-        //services.AddAuthentication().AddAzureAD(options =>
-        //{
-        //    options.Instance = Configuration["AzureAd:Instance"];
-        //    options.ClientId = Configuration["AzureAd:ClientId"];
-        //    options.TenantId = Configuration["AzureAd:TenantId"];
-        //});
-
-        //AzureADDefaults.AuthenticationScheme,
-        //    AzureADDefaults.OpenIdScheme,
-        //    AzureADDefaults.CookieScheme,
-        //    AzureADDefaults.DisplayName,
-
-
-        //services.AddAuthentication(AzureADDefaults.BearerAuthenticationScheme)
-        //    .AddAzureADBearer(options => Configuration.Bind("AzureAd", options));
-
-        //services.Configure<OpenIdConnectOptions>(AzureADDefaults.OpenIdScheme, options =>
-        //{
-        //    options.Authority = Configuration["AzureAd:Authority"];
-        //    options.ClientId = Configuration["AzureAd:ClientId"];
-        //    options.ClientSecret = Configuration["AzureAd:ClientSecret"];
-        //    options.CallbackPath = Configuration["AzureAd:CallbackPath"];
-        //    // Other configuration options as needed
-        //});
-
-
-        //services.AddMicrosoftIdentityWebAppAuthentication(Configuration)
-        //    .EnableTokenAcquisitionToCallDownstreamApi()
-        //    .AddInMemoryTokenCaches();
-
-        //services.AddAuthentication(options =>
-        //{
-        //    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        //    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        //    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-        //})
-        //    .AddJwtBearer(options =>
-        //    {
-        //        options.Authority = "https://login.microsoftonline.com/20ed8f4e-52f7-4d77-bfc1-862ced77c351/v2.0";
-        //        options.Audience = "f969fab1-6d79-42a0-96c0-32eb06cb8d0b";
-        //        options.TokenValidationParameters = new TokenValidationParameters
-        //        {
-        //            ValidateIssuer = true,
-        //            ValidIssuer = "https://login.microsoftonline.com/20ed8f4e-52f7-4d77-bfc1-862ced77c351/v2.0",
-        //            ValidateAudience = true,
-        //            ValidAudience = "f969fab1-6d79-42a0-96c0-32eb06cb8d0b",
-        //            ValidateLifetime = true
-        //        };
-        //    });
-
-        //    options =>
-        //{
-        //    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        //    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        //    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-        //}
-        //)
-        //.AddJwtBearer(options =>
-        //{
-        //    options.Authority = "https://login.microsoftonline.com/20ed8f4e-52f7-4d77-bfc1-862ced77c351/v2.0";
-        //    options.TokenValidationParameters = new TokenValidationParameters
-        //    {
-        //        ValidateIssuer = false,
-        //        ValidIssuer = "https://login.microsoftonline.com/",
-        //        ValidateAudience = false,
-        //        ValidAudience = "f969fab1-6d79-42a0-96c0-32eb06cb8d0b",
-        //        ValidateIssuerSigningKey = true,
-        //        RequireSignedTokens = true,
-        //        RequireExpirationTime = true,
-        //        IssuerSigningKeys = new List<SecurityKey>
-        //        {
-        //            new SymmetricSecurityKey(Encoding.ASCII.GetBytes("-KI3Q9nNR7bRofxmeZoXqbHZGew"))
-        //        }
-        //    };
-        //});
-
-
-        //services.AddAuthentication(
-        //    options =>
-        //    {
-        //        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        //        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        //        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-        //    })
-        //    ).AddMicrosoftAccount(microsoftOptions =>
-        //    {
-        //        microsoftOptions.ClientId = Configuration["Authentication:Microsoft:ClientId"];
-        //    microsoftOptions.ClientSecret = Configuration["Authentication:Microsoft:ClientSecret"];
-        //});
-
-        //services.AddIdentity<User, Role>(options =>
-        //                                  options.SignIn.RequireConfirmedAccount = true)
-        //                                 .AddEntityFrameworkStores<AppDbContext>();
-
-        //.AddMicrosoftAccount(microsoftOptions =>
-        //{
-        //    microsoftOptions.ClientId = Configuration["Authentication:Microsoft:ClientId"];
-        //    microsoftOptions.ClientSecret = Configuration["Authentication:Microsoft:ClientSecret"];
-        //});
-
-        //services.AddAuthentication(options =>
-        //{
-        //    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        //    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        //    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-        //}).AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"));
-
-        //services.AddMicrosoftIdentityWebApiAuthentication(options =>
-        //{
-        //    options.Instance = Configuration["AzureAd:Instance"];
-        //    options.ClientId = Configuration["AzureAd:ClientId"];
-        //    options.TenantId = Configuration["AzureAd:TenantId"];
-        //});
-
-
-        //services.AddEndpointsApiExplorer();
-        //AzureADDefaults.JwtBearerAuthenticationScheme
-
-        //services.AddAuthentication(options =>
-        //{
-        //    options.DefaultAuthenticateScheme = AzureADDefaults.JwtBearerAuthenticationScheme;
-        //    options.DefaultChallengeScheme = AzureADDefaults.JwtBearerAuthenticationScheme;
-        //    options.DefaultScheme = AzureADDefaults.JwtBearerAuthenticationScheme;
-        //})
-        //.AddAzureADBearer(options =>
-        //{
-        //    options.ClientId = Configuration["AzureAd:ClientId"];
-        //    options.Instance = Configuration["AzureAd:Instance"];
-        //    options.TenantId = Configuration["AzureAd:TenantId"];
-        //});
-
-        //services.Configure<OpenIdConnectOptions>(AzureADDefaults.OpenIdScheme, options =>
-        //{
-        //    options.Authority = options.Authority + "/v2.0";
-        //    options.TokenValidationParameters.ValidateIssuer = false;
-        //});
+            Constants.AzureAd);
 
         services.AddIdentity<User, Role>()
-           .AddEntityFrameworkStores<AppDbContext>()
-           .AddDefaultTokenProviders();
+            .AddEntityFrameworkStores<AppDbContext>()
+            .AddDefaultTokenProviders();
+
+        services.AddAuthorization(opt =>
+        {
+            opt.AddPolicy(AuthPolicy.SuperAdmin, policy => policy.RequireRole(AuthPolicy.SuperAdmin));
+            opt.AddPolicy(AuthPolicy.Admin, policy => policy.RequireRole(AuthPolicy.Admin));
+            opt.AddPolicy(AuthPolicy.User, policy => policy.RequireRole(AuthPolicy.User));
+        });
+
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.RequireHttpsMetadata = true;
+            options.SaveToken = true;
+            //var secret = Configuration.GetSection("Jwt").GetSection("Token").Get<String>();
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                //ValidateIssuerSigningKey = true,
+                //ValidateLifetime = true,
+                //RequireExpirationTime = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("123456789012345689999")),
+            };
+            options.Events = new JwtBearerEvents
+            {
+                OnAuthenticationFailed = context =>
+                {
+                    if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                    {
+                        context.Response.Headers.Add("Token-Expired", "true");
+                    }
+                    return Task.CompletedTask;
+                }
+            };
+        });
 
         var mapperConfig = new MapperConfiguration(options =>
         {

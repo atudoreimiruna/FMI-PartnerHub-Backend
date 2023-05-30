@@ -1,9 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Licenta.Core.Entities;
 using Licenta.Infrastructure;
-using Licenta.Services.DTOs;
-using System.Threading.Tasks;
-using Licenta.Services.DTOs.Newsletter;
 
 namespace Licenta.Api.Controllers;
 

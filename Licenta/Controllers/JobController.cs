@@ -4,14 +4,14 @@ using System.Threading.Tasks;
 using Licenta.Services.DTOs.Job;
 using Licenta.Services.QueryParameters;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
-using Microsoft.Identity.Web;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Licenta.External.Authorization;
 
 namespace Licenta.Api.Controllers;
 
 [Route("api/jobs")]
 [ApiController]
-[Authorize(AuthenticationSchemes = $"{MicrosoftAccountDefaults.AuthenticationScheme},{Constants.AzureAd}")]
+[Authorize(AuthPolicy.User, AuthenticationSchemes = $"{JwtBearerDefaults.AuthenticationScheme}")]
 public class JobController : ControllerBase
 {
     private readonly IJobManager _jobManager;

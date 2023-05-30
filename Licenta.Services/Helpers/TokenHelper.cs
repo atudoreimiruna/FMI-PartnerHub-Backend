@@ -26,14 +26,15 @@ public class TokenHelper : ITokenHelper
     public async Task<string> CreateAccessToken(User _User)
     {
         var userId = _User.Id.ToString();
+        var email = _User.Email;
         var userName = _User.UserName;
-
+        
 
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, userId),
-            new Claim(ClaimTypes.Name, userName)
-
+            new Claim(ClaimTypes.Name, userName),
+            new Claim(ClaimTypes.Email, email)
         };
 
         var roles = await _userManager.GetRolesAsync(_User);

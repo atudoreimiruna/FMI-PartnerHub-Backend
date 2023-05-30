@@ -10,15 +10,11 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
     {
         // CONFIG
         builder
-            .HasIndex(student => new { student.FirstName, student.LastName, student.Email })
+            .HasIndex(student => new { student.Name, student.Email })
             .IsUnique();
 
         builder
-            .Property(post => post.LastName)
-            .HasMaxLength(50);
-
-        builder
-            .Property(post => post.FirstName)
+            .Property(post => post.Name)
             .HasMaxLength(50);
 
         builder
@@ -32,10 +28,6 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
         builder
            .Property(post => post.Phone)
            .HasMaxLength(15);
-
-        builder
-           .Property(post => post.FirstName)
-           .HasMaxLength(20);
 
         builder
            .Property(post => post.Skill)

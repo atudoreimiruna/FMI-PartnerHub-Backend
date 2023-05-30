@@ -15,6 +15,7 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
+        CreateMap<Student, StudentPostDTO>().ReverseMap();
         CreateMap<Student, StudentViewDTO>()
             .ForMember(dest => dest.FileNames, opt => opt.MapFrom(src => src.Files.Select(x => x.Name).ToList()))
             .ForMember(dest => dest.Jobs, opt => opt.MapFrom(src => src.StudentJobs.Select(x => x.Job).ToList()))
