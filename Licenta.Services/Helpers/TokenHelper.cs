@@ -29,7 +29,6 @@ public class TokenHelper : ITokenHelper
         var email = _User.Email;
         var userName = _User.UserName;
         
-
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, userId),
@@ -50,7 +49,7 @@ public class TokenHelper : ITokenHelper
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.Now.AddMinutes(10),
+            Expires = DateTime.Now.AddMinutes(85),
             SigningCredentials = creds
         };
 

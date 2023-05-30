@@ -5,13 +5,12 @@ using Licenta.Services.DTOs.Job;
 using Licenta.Services.QueryParameters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Licenta.External.Authorization;
 
 namespace Licenta.Api.Controllers;
 
 [Route("api/jobs")]
 [ApiController]
-[Authorize(AuthPolicy.User, AuthenticationSchemes = $"{JwtBearerDefaults.AuthenticationScheme}")]
+[Authorize(AuthenticationSchemes = $"{JwtBearerDefaults.AuthenticationScheme}")]
 public class JobController : ControllerBase
 {
     private readonly IJobManager _jobManager;
@@ -21,6 +20,7 @@ public class JobController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin,SuperAdmin")]
     public async Task<IActionResult> AddJob([FromBody] JobPostDTO jobDto)
     {
         var job = await _jobManager.AddAsync(jobDto);
@@ -28,6 +28,7 @@ public class JobController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = "User,Admin,SuperAdmin")]
     public async Task<IActionResult> ListJobs([FromQuery] JobParameters parameters)
     {
         var jobs = await _jobManager.ListJobsAsync(parameters);
@@ -35,6 +36,7 @@ public class JobController : ControllerBase
     }
 
     [HttpGet("{partnerId}")]
+    [Authorize(Roles = "User,Admin,SuperAdmin")]
     public async Task<IActionResult> GetJobsOfPartner([FromRoute] long partnerId)
     {
         var jobs = await _jobManager.GetJobsOfPartnerAsync(partnerId);
@@ -42,6 +44,7 @@ public class JobController : ControllerBase
     }
 
     [HttpGet("by/{id}")]
+    [Authorize(Roles = "User,Admin,SuperAdmin")]
     public async Task<IActionResult> GetJobProfile([FromRoute] long id)
     {
         var job = await _jobManager.GetJobProfileByIdAsync(id);
@@ -49,6 +52,7 @@ public class JobController : ControllerBase
     }
 
     [HttpPut]
+    [Authorize(Roles = "Admin,SuperAdmin")]
     public async Task<IActionResult> UpdateAsync([FromBody] JobPutDTO jobDto)
     {
         var job = await _jobManager.UpdateAsync(jobDto);
@@ -56,6 +60,7 @@ public class JobController : ControllerBase
     }
 
     [HttpPut("activated")]
+    [Authorize(Roles = "Admin,SuperAdmin")]
     public async Task<IActionResult> UpdateActivatedAsync([FromBody] JobPutActivatedDTO jobDto)
     {
         var job = await _jobManager.UpdateActivatedAsync(jobDto);
@@ -63,6 +68,7 @@ public class JobController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin,SuperAdmin")]
     public async Task<IActionResult> DeleteJob([FromRoute] long id)
     {
         await _jobManager.DeleteAsync(id);

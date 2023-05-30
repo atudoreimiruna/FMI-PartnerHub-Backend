@@ -15,12 +15,14 @@ public class AuthManager : IAuthManager
 {
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
+    private readonly RoleManager<Role> _roleManager;
     private readonly ITokenHelper _tokenHelper;
     private readonly IRepository<Student> _studentRepository;
     private readonly IMapper _mapper;
 
     public AuthManager(UserManager<User> userManager,
         SignInManager<User> signInManager,
+        RoleManager<Role> roleManager,
         IRepository<Student> studentRepository,
         IMapper mapper,
         ITokenHelper tokenHelper)
@@ -28,6 +30,7 @@ public class AuthManager : IAuthManager
         _userManager = userManager;
         _signInManager = signInManager;
         _tokenHelper = tokenHelper;
+        _roleManager = roleManager;
         _studentRepository = studentRepository;
         _mapper = mapper;
     }
@@ -94,6 +97,52 @@ public class AuthManager : IAuthManager
             };
         }
     }
+
+    public async Task<bool> AddRoleToUserAsync(RegisterModel registerModel)
+    {
+        var user = await _userManager.FindByEmailAsync(registerModel.Email);
+        if (user == null)
+        {
+            user = new User
+            {
+                Email = registerModel.Email,
+                UserName = registerModel.Email
+            };
+            var userResult = await _userManager.CreateAsync(user);
+            if (!userResult.Succeeded)
+            {
+                return false;
+            }
+        }
+
+        var roleExists = await _roleManager.RoleExistsAsync(registerModel.Role.ToString());
+        if (!roleExists)
+        {
+            return false; 
+        }
+
+        var result = await _userManager.AddToRoleAsync(user, registerModel.Role.ToString());
+        return result.Succeeded;
+    }
+
+    public async Task<bool> RemoveRoleFromUserAsync(RegisterModel registerModel)
+    {
+        var user = await _userManager.FindByEmailAsync(registerModel.Email);
+        if (user == null)
+        {
+            return false;
+        }
+
+        var roleExists = await _roleManager.RoleExistsAsync(registerModel.Role.ToString());
+        if (!roleExists)
+        {
+            return false;
+        }
+
+        var result = await _userManager.RemoveFromRoleAsync(user, registerModel.Role.ToString());
+        return result.Succeeded;
+    }
+
 
     public async Task<string> Refresh(RefreshModel refreshModel)
     {

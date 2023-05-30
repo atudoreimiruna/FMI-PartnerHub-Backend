@@ -1,6 +1,9 @@
 ﻿using Licenta.Core.Enums;
+using Licenta.External.Authorization;
 using Licenta.Services.DTOs.Blob;
 using Licenta.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -10,6 +13,8 @@ namespace Licenta.Api.Controllers;
 
 [Route("api/image")]
 [ApiController]
+[Authorize(AuthenticationSchemes = $"{JwtBearerDefaults.AuthenticationScheme}")]
+[Authorize(Roles = "User,Admin,SuperAdmin")]
 public class FileController : ControllerBase
 {
     private readonly IFileManager _imageManager;

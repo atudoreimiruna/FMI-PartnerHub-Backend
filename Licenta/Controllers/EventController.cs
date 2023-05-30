@@ -1,6 +1,8 @@
 ﻿using Licenta.Services.DTOs.Event;
 using Licenta.Services.Interfaces;
 using Licenta.Services.QueryParameters;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -8,6 +10,7 @@ namespace Licenta.Api.Controllers;
 
 [Route("api/events")]
 [ApiController]
+[Authorize(AuthenticationSchemes = $"{JwtBearerDefaults.AuthenticationScheme}")]
 public class EventController : ControllerBase
 {
     private readonly IEventManager _eventManager;
@@ -17,6 +20,7 @@ public class EventController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin,SuperAdmin")]
     public async Task<IActionResult> AddEvent([FromBody] EventPostDTO eventDto)
     {
         var result = await _eventManager.AddAsync(eventDto);
@@ -24,6 +28,7 @@ public class EventController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = "User,Admin,SuperAdmin")]
     public async Task<IActionResult> ListEvents([FromQuery] EventParameters parameters)
     {
         var result = await _eventManager.ListEventsAsync(parameters);
@@ -31,6 +36,7 @@ public class EventController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [Authorize(Roles = "User,Admin,SuperAdmin")]
     public async Task<IActionResult> GetEventProfile([FromRoute] long id)
     {
         var result = await _eventManager.GetEventProfileByIdAsync(id);
@@ -38,6 +44,7 @@ public class EventController : ControllerBase
     }
 
     [HttpPut]
+    [Authorize(Roles = "Admin,SuperAdmin")]
     public async Task<IActionResult> UpdateAsync([FromBody] EventPutDTO eventDto)
     {
         var result = await _eventManager.UpdateAsync(eventDto);
@@ -45,6 +52,7 @@ public class EventController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin,SuperAdmin")]
     public async Task<IActionResult> DeleteEvent([FromRoute] long id)
     {
         await _eventManager.DeleteAsync(id);

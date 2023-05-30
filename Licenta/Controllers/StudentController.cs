@@ -2,11 +2,15 @@
 using Licenta.Services.Interfaces;
 using System.Threading.Tasks;
 using Licenta.Services.DTOs.Student;
+using Licenta.External.Authorization;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace Licenta.Api.Controllers;
 
 [Route("api/students")]
 [ApiController]
+[Authorize(AuthenticationSchemes = $"{JwtBearerDefaults.AuthenticationScheme}")]
 public class StudentController : ControllerBase
 {
     private readonly IStudentManager _studentManager;
@@ -16,6 +20,7 @@ public class StudentController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [Authorize(Roles = "User,Admin,SuperAdmin")]
     public async Task<IActionResult> GetStudentProfile([FromRoute] long id)
     {
         var student = await _studentManager.GetStudentProfileByIdAsync(id);
@@ -23,6 +28,7 @@ public class StudentController : ControllerBase
     }
 
     [HttpGet("by/{email}")]
+    [Authorize(Roles = "User,Admin,SuperAdmin")]
     public async Task<IActionResult> GetStudent([FromRoute] string email)
     {
         var student = await _studentManager.GetStudentProfileByEmailAsync(email);
@@ -30,6 +36,7 @@ public class StudentController : ControllerBase
     }
 
     [HttpPut]
+    [Authorize(AuthPolicy.User)]
     public async Task<IActionResult> UpdateAsync([FromBody] StudentPutDTO studentDto)
     {
         var student = await _studentManager.UpdateAsync(studentDto);
@@ -37,6 +44,7 @@ public class StudentController : ControllerBase
     }
 
     [HttpPut("job")]
+    [Authorize(AuthPolicy.User)]
     public async Task<IActionResult> UpdateJobAsync([FromBody] StudentJobPutDTO studentDto)
     {
         var student = await _studentManager.UpdateJobAsync(studentDto);
@@ -44,6 +52,7 @@ public class StudentController : ControllerBase
     }
 
     [HttpDelete("{studentId}/{jobId}")]
+    [Authorize(AuthPolicy.User)]
     public async Task<IActionResult> DeleteStudentJob([FromRoute] long studentId, [FromRoute] long jobId)
     {
         await _studentManager.DeleteStudentJobAsync(studentId, jobId);
@@ -51,6 +60,7 @@ public class StudentController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(AuthPolicy.SuperAdmin)]
     public async Task<IActionResult> DeleteStudent([FromRoute] long id)
     {
         await _studentManager.DeleteAsync(id);

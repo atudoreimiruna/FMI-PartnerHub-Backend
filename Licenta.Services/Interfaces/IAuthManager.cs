@@ -7,4 +7,6 @@ public interface IAuthManager
 {
     Task<LoginResult> Login(LoginModel loginModel);
     Task<string> Refresh(RefreshModel refreshModel);
+    Task<bool> AddRoleToUserAsync(RegisterModel registerModel);
+    Task<bool> RemoveRoleFromUserAsync(RegisterModel registerModel);
 }

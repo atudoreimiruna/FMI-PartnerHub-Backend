@@ -3,12 +3,15 @@ using Licenta.Services.Interfaces;
 using System.Threading.Tasks;
 using Licenta.Services.DTOs.Partner;
 using Licenta.Services.QueryParameters;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Licenta.External.Authorization;
 
 namespace Licenta.Api.Controllers;
 
 [Route("api/partners")]
 [ApiController]
-//[Authorize]
+[Authorize(AuthenticationSchemes = $"{JwtBearerDefaults.AuthenticationScheme}")]
 public class PartnerController : ControllerBase
 {
     private readonly IPartnerManager _partnerManager;
@@ -18,6 +21,7 @@ public class PartnerController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(AuthPolicy.SuperAdmin)]
     public async Task<IActionResult> AddPartner([FromBody] PartnerPostDTO partnerDto)
     {
         var partner = await _partnerManager.AddAsync(partnerDto);
@@ -25,6 +29,7 @@ public class PartnerController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = "User,Admin,SuperAdmin")]
     public async Task<IActionResult> ListPartners([FromQuery] PartnerParameters parameters)
     {
         var partners = await _partnerManager.ListPartnersAsync(parameters);
@@ -32,6 +37,7 @@ public class PartnerController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [Authorize(Roles = "User,Admin,SuperAdmin")]
     public async Task<IActionResult> GetPartnerProfile([FromRoute] long id)
     {
         var partner = await _partnerManager.GetPartnerProfileByIdAsync(id);
@@ -39,6 +45,7 @@ public class PartnerController : ControllerBase
     }
 
     [HttpPut]
+    [Authorize(Roles = "Admin,SuperAdmin")]
     public async Task<IActionResult> UpdateAsync([FromBody] PartnerPutDTO partnerDto)
     {
         var partner = await _partnerManager.UpdateAsync(partnerDto);
@@ -46,6 +53,7 @@ public class PartnerController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(AuthPolicy.SuperAdmin)]
     public async Task<IActionResult> DeletePartner([FromRoute] long id)
     {
         await _partnerManager.DeleteAsync(id);

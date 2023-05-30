@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Identity.Web;
 using System.Security.Claims;
+using Licenta.External.Authorization;
 
 namespace Licenta.Api.Controllers;
 
@@ -38,7 +39,39 @@ public class AuthController : ControllerBase
         }
         else
         {
-            return BadRequest("Failed to login");
+            return BadRequest("Failed to login!");
+        }
+    }
+
+    [HttpPost("Role")]
+    [Authorize(AuthPolicy.SuperAdmin)]
+    public async Task<IActionResult> AddRoleToUser([FromBody] RegisterModel registerModel)
+    {
+        var result = await _authManager.AddRoleToUserAsync(registerModel);
+
+        if (result)
+        {
+            return Ok(result);
+        }
+        else
+        {
+            return BadRequest("Failed to add role!");
+        }
+    }
+
+    [HttpDelete("Role")]
+    [Authorize(AuthPolicy.SuperAdmin)]
+    public async Task<IActionResult> RemoveRoleFromUser([FromBody] RegisterModel registerModel)
+    {
+        var result = await _authManager.RemoveRoleFromUserAsync(registerModel);
+
+        if (result)
+        {
+            return Ok(result);
+        }
+        else
+        {
+            return BadRequest("Failed to remove role!");
         }
     }
 
@@ -46,6 +79,6 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Refresh([FromBody] RefreshModel refreshModel)
     {
         var result = await _authManager.Refresh(refreshModel);
-        return !result.Contains("Bad") ? Ok(result) : BadRequest("Failed to refresh");
+        return !result.Contains("Bad") ? Ok(result) : BadRequest("Failed to refresh!");
     }
 }
