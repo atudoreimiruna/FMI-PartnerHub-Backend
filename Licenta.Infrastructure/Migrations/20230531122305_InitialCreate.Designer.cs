@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Licenta.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230525133653_ChangePostEntity")]
-    partial class ChangePostEntity
+    [Migration("20230531122305_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,6 +32,9 @@ namespace Licenta.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)");
 
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("Description")
                         .HasMaxLength(5000)
                         .HasColumnType("varchar(5000)");
@@ -40,10 +43,21 @@ namespace Licenta.Infrastructure.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime(6)");
 
+                    b.Property<string>("Location")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
                     b.Property<long?>("PartnerId")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("Time")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Title")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Type")
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
@@ -58,28 +72,40 @@ namespace Licenta.Infrastructure.Migrations
                         {
                             Id = 1L,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Date = new DateTime(2022, 4, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut quam imperdiet, ullamcorper ex non, efficitur nisi. Aliquam erat volutpat. Nullam et luctus dui, a porttitor lacus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque et cursus erat. Nullam cursus consequat leo, a laoreet lectus convallis nec. Maecenas eget felis neque. Morbi lacinia neque id sapien dapibus, ac gravida neque pulvinar. Pellentesque rhoncus eu augue a pretium. ",
                             LastUpdated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Location = "FMI",
                             PartnerId = 1L,
-                            Title = "Post 1"
+                            Time = "17:00",
+                            Title = "Post 1",
+                            Type = "Conferinta"
                         },
                         new
                         {
                             Id = 2L,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Date = new DateTime(2023, 8, 9, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut quam imperdiet, ullamcorper ex non, efficitur nisi. Aliquam erat volutpat. Nullam et luctus dui, a porttitor lacus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque et cursus erat. Nullam cursus consequat leo, a laoreet lectus convallis nec. Maecenas eget felis neque. Morbi lacinia neque id sapien dapibus, ac gravida neque pulvinar. Pellentesque rhoncus eu augue a pretium.",
                             LastUpdated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Location = "FMI",
                             PartnerId = 1L,
-                            Title = "Post 2"
+                            Time = "17:00",
+                            Title = "Post 2",
+                            Type = "Workshop"
                         },
                         new
                         {
                             Id = 3L,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Date = new DateTime(2023, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut quam imperdiet, ullamcorper ex non, efficitur nisi. Aliquam erat volutpat. Nullam et luctus dui, a porttitor lacus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque et cursus erat. Nullam cursus consequat leo, a laoreet lectus convallis nec. Maecenas eget felis neque. Morbi lacinia neque id sapien dapibus, ac gravida neque pulvinar. Pellentesque rhoncus eu augue a pretium.",
                             LastUpdated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Location = "FMI",
                             PartnerId = 3L,
-                            Title = "Post 3"
+                            Time = "17:00",
+                            Title = "Post 3",
+                            Type = "Workshop"
                         });
                 });
 
@@ -136,6 +162,9 @@ namespace Licenta.Infrastructure.Migrations
                     b.Property<long?>("PartnerId")
                         .HasColumnType("bigint");
 
+                    b.Property<long?>("StudentId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Uri")
                         .HasColumnType("longtext");
 
@@ -144,6 +173,8 @@ namespace Licenta.Infrastructure.Migrations
                     b.HasIndex("EventId");
 
                     b.HasIndex("PartnerId");
+
+                    b.HasIndex("StudentId");
 
                     b.ToTable("Files");
                 });
@@ -318,6 +349,9 @@ namespace Licenta.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
+                    b.Property<string>("ProfileImageUrl")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Social")
                         .HasColumnType("longtext");
 
@@ -374,6 +408,14 @@ namespace Licenta.Infrastructure.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("longtext");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("LastUpdated")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("Name")
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
@@ -391,6 +433,70 @@ namespace Licenta.Infrastructure.Migrations
                     b.ToTable("AspNetRoles", (string)null);
                 });
 
+            modelBuilder.Entity("Licenta.Core.Entities.Student", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Degree")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(5000)
+                        .HasColumnType("varchar(5000)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("PersonalEmail")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("Phone")
+                        .HasMaxLength(15)
+                        .HasColumnType("varchar(15)");
+
+                    b.Property<string>("Skill")
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name", "Email")
+                        .IsUnique();
+
+                    b.ToTable("Students");
+                });
+
+            modelBuilder.Entity("Licenta.Core.Entities.StudentJob", b =>
+                {
+                    b.Property<long>("StudentId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("JobId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("StudentId", "JobId");
+
+                    b.HasIndex("JobId");
+
+                    b.ToTable("StudentJobs");
+                });
+
             modelBuilder.Entity("Licenta.Core.Entities.User", b =>
                 {
                     b.Property<long>("Id")
@@ -404,12 +510,20 @@ namespace Licenta.Infrastructure.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("longtext");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime?>("LastUpdated")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime(6)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("tinyint(1)");
@@ -467,19 +581,17 @@ namespace Licenta.Infrastructure.Migrations
                     b.Property<long>("RoleId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("RoleId1")
-                        .HasColumnType("bigint");
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<long?>("UserId1")
-                        .HasColumnType("bigint");
+                    b.Property<DateTime?>("LastUpdated")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime(6)");
 
                     b.HasKey("UserId", "RoleId");
 
                     b.HasIndex("RoleId");
-
-                    b.HasIndex("RoleId1");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("AspNetUserRoles", (string)null);
                 });
@@ -590,9 +702,16 @@ namespace Licenta.Infrastructure.Migrations
                         .HasForeignKey("PartnerId")
                         .OnDelete(DeleteBehavior.SetNull);
 
+                    b.HasOne("Licenta.Core.Entities.Student", "Student")
+                        .WithMany("Files")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.Navigation("Event");
 
                     b.Navigation("Partner");
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("Licenta.Core.Entities.Job", b =>
@@ -605,27 +724,36 @@ namespace Licenta.Infrastructure.Migrations
                     b.Navigation("Partner");
                 });
 
+            modelBuilder.Entity("Licenta.Core.Entities.StudentJob", b =>
+                {
+                    b.HasOne("Licenta.Core.Entities.Job", "Job")
+                        .WithMany("StudentJobs")
+                        .HasForeignKey("JobId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Licenta.Core.Entities.Student", "Student")
+                        .WithMany("StudentJobs")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("Job");
+
+                    b.Navigation("Student");
+                });
+
             modelBuilder.Entity("Licenta.Core.Entities.UserRole", b =>
                 {
-                    b.HasOne("Licenta.Core.Entities.Role", null)
+                    b.HasOne("Licenta.Core.Entities.Role", "Role")
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Licenta.Core.Entities.Role", "Role")
+                    b.HasOne("Licenta.Core.Entities.User", "User")
                         .WithMany("UserRoles")
-                        .HasForeignKey("RoleId1");
-
-                    b.HasOne("Licenta.Core.Entities.User", null)
-                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Licenta.Core.Entities.User", "User")
-                        .WithMany("UserRoles")
-                        .HasForeignKey("UserId1");
 
                     b.Navigation("Role");
 
@@ -673,6 +801,11 @@ namespace Licenta.Infrastructure.Migrations
                     b.Navigation("Files");
                 });
 
+            modelBuilder.Entity("Licenta.Core.Entities.Job", b =>
+                {
+                    b.Navigation("StudentJobs");
+                });
+
             modelBuilder.Entity("Licenta.Core.Entities.Partner", b =>
                 {
                     b.Navigation("Events");
@@ -682,9 +815,11 @@ namespace Licenta.Infrastructure.Migrations
                     b.Navigation("Jobs");
                 });
 
-            modelBuilder.Entity("Licenta.Core.Entities.Role", b =>
+            modelBuilder.Entity("Licenta.Core.Entities.Student", b =>
                 {
-                    b.Navigation("UserRoles");
+                    b.Navigation("Files");
+
+                    b.Navigation("StudentJobs");
                 });
 
             modelBuilder.Entity("Licenta.Core.Entities.User", b =>

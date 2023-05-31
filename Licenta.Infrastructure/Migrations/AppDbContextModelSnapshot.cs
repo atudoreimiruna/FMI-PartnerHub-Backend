@@ -586,19 +586,9 @@ namespace Licenta.Infrastructure.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime(6)");
 
-                    b.Property<long?>("RoleId1")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("UserId1")
-                        .HasColumnType("bigint");
-
                     b.HasKey("UserId", "RoleId");
 
                     b.HasIndex("RoleId");
-
-                    b.HasIndex("RoleId1");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("AspNetUserRoles", (string)null);
                 });
@@ -750,25 +740,17 @@ namespace Licenta.Infrastructure.Migrations
 
             modelBuilder.Entity("Licenta.Core.Entities.UserRole", b =>
                 {
-                    b.HasOne("Licenta.Core.Entities.Role", null)
+                    b.HasOne("Licenta.Core.Entities.Role", "Role")
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Licenta.Core.Entities.Role", "Role")
+                    b.HasOne("Licenta.Core.Entities.User", "User")
                         .WithMany("UserRoles")
-                        .HasForeignKey("RoleId1");
-
-                    b.HasOne("Licenta.Core.Entities.User", null)
-                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Licenta.Core.Entities.User", "User")
-                        .WithMany("UserRoles")
-                        .HasForeignKey("UserId1");
 
                     b.Navigation("Role");
 
@@ -828,11 +810,6 @@ namespace Licenta.Infrastructure.Migrations
                     b.Navigation("Files");
 
                     b.Navigation("Jobs");
-                });
-
-            modelBuilder.Entity("Licenta.Core.Entities.Role", b =>
-                {
-                    b.Navigation("UserRoles");
                 });
 
             modelBuilder.Entity("Licenta.Core.Entities.Student", b =>

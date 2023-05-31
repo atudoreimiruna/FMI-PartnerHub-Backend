@@ -42,6 +42,27 @@ public class AppDbContext : IdentityDbContext<
         modelBuilder.ApplyConfiguration(new JobConfiguration());
         modelBuilder.ApplyConfiguration(new StudentConfiguration());
         modelBuilder.ApplyConfiguration(new StudentJobConfiguration());
-        modelBuilder.ApplyConfiguration(new UserRoleConfiguration());
+
+        modelBuilder.Entity<User>(b =>
+        {
+            b.HasMany(u => u.UserRoles)
+             .WithOne(ur => ur.User)
+             .HasForeignKey(ur => ur.UserId)
+             .IsRequired();
+        });
+
+        modelBuilder.Entity<Role>(role =>
+        {
+            role.HasMany<UserRole>()
+                .WithOne(ur => ur.Role)
+                .HasForeignKey(ur => ur.RoleId)
+                .IsRequired();
+        });
+
+        modelBuilder.Entity<UserRole>(userRole =>
+        {
+            userRole.HasKey(r => new { r.UserId, r.RoleId });
+        });
     }
+
 }

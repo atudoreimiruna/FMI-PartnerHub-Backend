@@ -13,5 +13,5 @@ public class User : IdentityUser<long>
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public DateTime? LastUpdated { get; set; }
     public string RefreshToken { get; set; }
-    public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+    public virtual ICollection<UserRole> UserRoles { get; set; }
 }

@@ -49,7 +49,7 @@ public class TokenHelper : ITokenHelper
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.Now.AddMinutes(85),
+            Expires = DateTime.Now.AddMinutes(800),
             SigningCredentials = creds
         };
 
