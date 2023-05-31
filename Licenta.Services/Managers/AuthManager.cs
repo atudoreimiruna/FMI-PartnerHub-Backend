@@ -8,6 +8,9 @@ using Licenta.Core.Enums;
 using Licenta.Services.DTOs.Student;
 using AutoMapper;
 using Licenta.Core.Interfaces;
+using Licenta.Core.Extensions.PagedList;
+using Licenta.Services.QueryParameters;
+using Licenta.Services.Specifications;
 
 namespace Licenta.Services.Managers;
 
@@ -18,12 +21,14 @@ public class AuthManager : IAuthManager
     private readonly RoleManager<Role> _roleManager;
     private readonly ITokenHelper _tokenHelper;
     private readonly IRepository<Student> _studentRepository;
+    private readonly IRepository<User> _userRepository;
     private readonly IMapper _mapper;
 
     public AuthManager(UserManager<User> userManager,
         SignInManager<User> signInManager,
         RoleManager<Role> roleManager,
         IRepository<Student> studentRepository,
+        IRepository<User> userRepository,
         IMapper mapper,
         ITokenHelper tokenHelper)
     {
@@ -32,6 +37,7 @@ public class AuthManager : IAuthManager
         _tokenHelper = tokenHelper;
         _roleManager = roleManager;
         _studentRepository = studentRepository;
+        _userRepository = userRepository;
         _mapper = mapper;
     }
 
@@ -96,6 +102,13 @@ public class AuthManager : IAuthManager
                 RefreshToken = refreshToken
             };
         }
+    }
+
+    public async Task<PagedList<UserViewDTO>> ListUsersAsync(UserParameters parameters)
+    {
+        var spec = new UserSpecification(parameters);
+        var users = await _userRepository.FindBySpecAsync(spec);
+        return _mapper.Map<PagedList<UserViewDTO>>(users);
     }
 
     public async Task<bool> AddRoleToUserAsync(RegisterModel registerModel)

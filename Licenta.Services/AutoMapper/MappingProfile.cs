@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Licenta.Core.Entities;
 using Licenta.Core.Extensions.PagedList;
-using Licenta.Services.DTOs.Blob;
+using Licenta.Services.DTOs.Auth;
 using Licenta.Services.DTOs.Event;
 using Licenta.Services.DTOs.Job;
 using Licenta.Services.DTOs.Partner;
@@ -15,6 +15,10 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
+        CreateMap<User, UserViewDTO>()
+            .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => src.UserRoles.Select(x => x.Role.Name).ToList()))
+            .ReverseMap();
+
         CreateMap<Student, StudentPostDTO>().ReverseMap();
         CreateMap<Student, StudentViewDTO>()
             .ForMember(dest => dest.FileNames, opt => opt.MapFrom(src => src.Files.Select(x => x.Name).ToList()))

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Identity.Web;
 using System.Security.Claims;
 using Licenta.External.Authorization;
+using Licenta.Services.QueryParameters;
 
 namespace Licenta.Api.Controllers;
 
@@ -42,6 +43,15 @@ public class AuthController : ControllerBase
             return BadRequest("Failed to login!");
         }
     }
+
+    [HttpGet]
+    [Authorize(Roles = "Admin,SuperAdmin")]
+    public async Task<IActionResult> ListUsers([FromQuery] UserParameters parameters)
+    {
+        var users = await _authManager.ListUsersAsync(parameters);
+        return Ok(users);
+    }
+
 
     [HttpPost("Role")]
     [Authorize(AuthPolicy.SuperAdmin)]
