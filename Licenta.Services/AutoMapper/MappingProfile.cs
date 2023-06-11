@@ -42,6 +42,7 @@ public class MappingProfile : Profile
         CreateMap<Event, EventPostDTO>().ReverseMap();
         CreateMap<Event, EventViewDTO>()
             .ForMember(dest => dest.Files, opt => opt.MapFrom(src => src.Files))
+            .ForMember(dest => dest.PartnerName, opt => opt.MapFrom(src => src.Partner.Name))
             .ReverseMap();
         CreateMap<Event, EventPutDTO>()
             .ReverseMap()

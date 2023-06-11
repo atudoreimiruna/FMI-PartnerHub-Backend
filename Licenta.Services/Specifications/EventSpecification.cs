@@ -39,12 +39,20 @@ public class EventSpecification : Specification<Event>
                 AddOrderBy(x => x.LastUpdated);
                 break;
 
+            case "Date":
+                AddOrderBy(x => x.Date);
+                break;
+
             default:
                 break;
         }
 
         switch (parameters.OrderByDescending)
         {
+            case "Date":
+                AddOrderByDescending(x => x.Date);
+                break;
+
             case "LastUpdated":
                 AddOrderByDescending(x => x.LastUpdated);
                 break;

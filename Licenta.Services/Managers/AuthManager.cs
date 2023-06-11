@@ -170,7 +170,6 @@ public class AuthManager : IAuthManager
         }
 
         var newJwtToken = await _tokenHelper.CreateAccessToken(user);
-
         return newJwtToken;
     }
 }

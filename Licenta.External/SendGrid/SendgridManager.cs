@@ -1,8 +1,6 @@
-﻿using Licenta.Services.Interfaces.External;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using SendGrid;
 using SendGrid.Helpers.Mail;
-using System.Net.Mail;
 
 namespace Licenta.External.SendGrid;
 

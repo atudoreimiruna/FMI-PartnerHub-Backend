@@ -14,6 +14,7 @@ public class EventViewDTO : BaseDto
     public string Location { get; set; }
     public DateTime Date { get; set; }
     public string Time { get; set; }
+    public string PartnerName { get; set; }
     public PartnerViewDTO Partner { get; set; }
     public List<File> Files { get; set; } 
 }

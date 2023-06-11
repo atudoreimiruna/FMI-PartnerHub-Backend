@@ -8,6 +8,7 @@ public class EventParameters : BaseParameters
     public string Type { get; set; }
     public string Location { get; set; }
     public string Time { get; set; }
+    public DateTime Date { get; set; }
     public string PartnerName { get; set; }
     public string PartnerId { get; set; }
     public DateTime LastUpdated { get; set; }
