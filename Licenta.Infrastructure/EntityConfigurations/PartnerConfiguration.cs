@@ -58,6 +58,13 @@ public class PartnerConfiguration : IEntityTypeConfiguration<Partner>
             .HasForeignKey(n => n.PartnerId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        builder
+            .HasMany(c => c.StudentPartners)
+            .WithOne(cs => cs.Partner)
+            .HasForeignKey(cs => cs.PartnerId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.NoAction);
+
         builder.HasData
         (
             new Partner

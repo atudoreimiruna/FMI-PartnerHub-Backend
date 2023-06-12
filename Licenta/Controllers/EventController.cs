@@ -4,6 +4,7 @@ using Licenta.Services.QueryParameters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Licenta.Api.Controllers;
@@ -20,10 +21,11 @@ public class EventController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin,SuperAdmin")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> AddEvent([FromBody] EventPostDTO eventDto)
     {
-        var result = await _eventManager.AddAsync(eventDto);
+        var partnerId = User.FindFirstValue("partnerId");
+        var result = await _eventManager.AddAsync(eventDto, partnerId);
         return Ok(result);
     }
 
@@ -44,18 +46,20 @@ public class EventController : ControllerBase
     }
 
     [HttpPut]
-    [Authorize(Roles = "Admin,SuperAdmin")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateAsync([FromBody] EventPutDTO eventDto)
     {
-        var result = await _eventManager.UpdateAsync(eventDto);
+        var partnerId = User.FindFirstValue("partnerId");
+        var result = await _eventManager.UpdateAsync(eventDto, partnerId);
         return Ok(result);
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Admin,SuperAdmin")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteEvent([FromRoute] long id)
     {
-        await _eventManager.DeleteAsync(id);
+        var partnerId = User.FindFirstValue("partnerId");
+        await _eventManager.DeleteAsync(id, partnerId);
         return Ok("Event DELETED successfully");
     }
 }

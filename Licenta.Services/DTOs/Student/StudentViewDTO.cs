@@ -1,4 +1,5 @@
 ﻿using Licenta.Services.DTOs.Job;
+using Licenta.Services.DTOs.Partner;
 using System.Collections.Generic;
 
 namespace Licenta.Services.DTOs.Student;
@@ -15,4 +16,5 @@ public class StudentViewDTO
     public string Description { get; set; }
     public List<string> FileNames { get; set; }
     public List<JobViewDTO> Jobs { get; set; }
+    public List<PartnerViewDTO> Partners { get; set; }
 }

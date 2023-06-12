@@ -69,6 +69,22 @@ public class AuthController : ControllerBase
         }
     }
 
+    [HttpPost("Partner")]
+    [Authorize(AuthPolicy.SuperAdmin)]
+    public async Task<IActionResult> AddPartnerToAdmin([FromBody] AdminPartnerDTO adminPartnerDTO)
+    {
+        var result = await _authManager.AddPartnerToAdminAsync(adminPartnerDTO);
+
+        if (result)
+        {
+            return Ok(result);
+        }
+        else
+        {
+            return BadRequest("Failed to add role!");
+        }
+    }
+
     [HttpDelete("Role")]
     [Authorize(AuthPolicy.SuperAdmin)]
     public async Task<IActionResult> RemoveRoleFromUser([FromBody] RegisterModel registerModel)

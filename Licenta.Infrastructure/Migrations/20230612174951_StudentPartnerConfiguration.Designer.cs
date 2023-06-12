@@ -3,6 +3,7 @@ using System;
 using Licenta.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Licenta.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230612174951_StudentPartnerConfiguration")]
+    partial class StudentPartnerConfiguration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -600,9 +603,6 @@ namespace Licenta.Infrastructure.Migrations
                     b.Property<DateTime?>("LastUpdated")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime(6)");
-
-                    b.Property<long>("PartnerId")
-                        .HasColumnType("bigint");
 
                     b.HasKey("UserId", "RoleId");
 

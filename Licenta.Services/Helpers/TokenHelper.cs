@@ -10,6 +10,8 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
+using Licenta.Core.Interfaces;
 
 namespace Licenta.Services.Helpers;
 
@@ -17,10 +19,12 @@ public class TokenHelper : ITokenHelper
 {
 
     private readonly UserManager<User> _userManager;
+    private readonly IRepository<UserRole> _userRoleRepository;
 
-    public TokenHelper(UserManager<User> userManager)
+    public TokenHelper(UserManager<User> userManager, IRepository<UserRole> userRoleRepository)
     {
         _userManager = userManager;
+        _userRoleRepository = userRoleRepository;
     }
 
     public async Task<string> CreateAccessToken(User _User)
@@ -28,15 +32,25 @@ public class TokenHelper : ITokenHelper
         var userId = _User.Id.ToString();
         var email = _User.Email;
         var userName = _User.UserName;
-        
+
+        var roles = await _userManager.GetRolesAsync(_User);
+
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, userId),
             new Claim(ClaimTypes.Name, userName),
-            new Claim(ClaimTypes.Email, email)
+            new Claim(ClaimTypes.Email, email),
         };
 
-        var roles = await _userManager.GetRolesAsync(_User);
+        var userRole = _userRoleRepository
+            .AsQueryable()
+            .Where(x => x.UserId == _User.Id && x.RoleId == 2)
+            .FirstOrDefault();
+
+        if (userRole != null) 
+        {
+            claims.Add(new Claim("partnerId", userRole.PartnerId.ToString()));
+        }
 
         foreach (var role in roles) claims.Add(new Claim(ClaimTypes.Role, role));
 

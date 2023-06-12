@@ -48,5 +48,12 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
             .HasForeignKey(cs => cs.StudentId)
             .IsRequired(false)
             .OnDelete(DeleteBehavior.NoAction);
+
+        builder
+            .HasMany(c => c.StudentPartners)
+            .WithOne(cs => cs.Student)
+            .HasForeignKey(cs => cs.StudentId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

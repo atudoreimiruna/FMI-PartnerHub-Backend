@@ -13,4 +13,5 @@ public class UserRole : IdentityUserRole<long>
     public DateTime? LastUpdated { get; set; }
     public virtual User User { get; set; }
     public virtual Role Role { get; set; }
+    public long PartnerId { get; set; }
 }

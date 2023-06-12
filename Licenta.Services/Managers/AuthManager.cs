@@ -11,6 +11,7 @@ using Licenta.Core.Interfaces;
 using Licenta.Core.Extensions.PagedList;
 using Licenta.Services.QueryParameters;
 using Licenta.Services.Specifications;
+using System.Linq;
 
 namespace Licenta.Services.Managers;
 
@@ -22,6 +23,7 @@ public class AuthManager : IAuthManager
     private readonly ITokenHelper _tokenHelper;
     private readonly IRepository<Student> _studentRepository;
     private readonly IRepository<User> _userRepository;
+    private readonly IRepository<UserRole> _userRoleRepository;
     private readonly IMapper _mapper;
 
     public AuthManager(UserManager<User> userManager,
@@ -29,6 +31,7 @@ public class AuthManager : IAuthManager
         RoleManager<Role> roleManager,
         IRepository<Student> studentRepository,
         IRepository<User> userRepository,
+        IRepository<UserRole> userRoleRepository,
         IMapper mapper,
         ITokenHelper tokenHelper)
     {
@@ -38,6 +41,7 @@ public class AuthManager : IAuthManager
         _roleManager = roleManager;
         _studentRepository = studentRepository;
         _userRepository = userRepository;
+        _userRoleRepository = userRoleRepository;
         _mapper = mapper;
     }
 
@@ -137,6 +141,37 @@ public class AuthManager : IAuthManager
         var result = await _userManager.AddToRoleAsync(user, registerModel.Role.ToString());
         return result.Succeeded;
     }
+
+    public async Task<bool> AddPartnerToAdminAsync(AdminPartnerDTO adminPartnerDTO)
+    {
+        var user = await _userManager.FindByEmailAsync(adminPartnerDTO.Email);
+        if (user == null)
+        {
+            return false;
+        }
+
+        var roleExists = await _roleManager.RoleExistsAsync(RolesEnum.Admin.ToString());
+        if (!roleExists)
+        {
+            return false;
+        }
+        else
+        {
+            var userRole = _userRoleRepository
+                .AsQueryable()
+                .Where(x => x.UserId == user.Id && x.RoleId == 2)
+                .FirstOrDefault();
+
+            if (userRole == null) { return false; }
+            else 
+            { 
+                userRole.PartnerId = adminPartnerDTO.PartnerId;
+                await _userRoleRepository.UpdateAsync(userRole);
+                return true;
+            }
+        }
+    }
+
 
     public async Task<bool> RemoveRoleFromUserAsync(RegisterModel registerModel)
     {

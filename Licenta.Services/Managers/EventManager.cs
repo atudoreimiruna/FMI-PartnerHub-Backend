@@ -27,13 +27,20 @@ public class EventManager : IEventManager
         _mapper = mapper;
     }
 
-    public async Task<EventViewDTO> AddAsync(EventPostDTO eventDto)
+    public async Task<EventViewDTO> AddAsync(EventPostDTO eventDto, string partnerId)
     {
-        var result = _mapper.Map<Event>(eventDto);
+        if (partnerId != null && eventDto.PartnerId == long.Parse(partnerId)) 
+        {
+            var result = _mapper.Map<Event>(eventDto);
 
-        await _eventRepository.AddAsync(result);
+            await _eventRepository.AddAsync(result);
 
-        return _mapper.Map<EventViewDTO>(result);
+            return _mapper.Map<EventViewDTO>(result);
+        }
+        else
+        {
+            throw new CustomNotFoundException("The event cannot be added");
+        }
     }
 
     public async Task<PagedList<EventViewDTO>> ListEventsAsync(EventParameters parameters)
@@ -59,34 +66,48 @@ public class EventManager : IEventManager
         return _mapper.Map<EventViewDTO>(result);
     }
 
-    public async Task<EventViewDTO> UpdateAsync(EventPutDTO eventDto)
+    public async Task<EventViewDTO> UpdateAsync(EventPutDTO eventDto, string partnerId)
     {
-        var result = await _eventRepository.FindByIdAsync(eventDto.Id);
-
-        if (result == null)
+        if (partnerId != null && eventDto.Id == long.Parse(partnerId))
         {
-            throw new CustomNotFoundException("Event Not Found");
+            var result = await _eventRepository.FindByIdAsync(eventDto.Id);
+
+            if (result == null)
+            {
+                throw new CustomNotFoundException("Event Not Found");
+            }
+
+            _mapper.Map(eventDto, result);
+
+            if (eventDto.Date != null)
+            {
+                result.Date = eventDto.Date.Value;
+            }
+
+            await _eventRepository.UpdateAsync(result);
+
+            return await GetEventProfileByIdAsync(eventDto.Id);
         }
-
-        _mapper.Map(eventDto, result);
-
-        if (eventDto.Date != null)
+        else
         {
-            result.Date = eventDto.Date.Value;
+            throw new CustomNotFoundException("The event cannot be updated");
         }
-
-        await _eventRepository.UpdateAsync(result);
-
-        return await GetEventProfileByIdAsync(eventDto.Id);
     }
 
-    public async Task DeleteAsync(long id)
+    public async Task DeleteAsync(long id, string partnerId)
     {
         var result = await _eventRepository.FindByIdAsync(id);
         if (result == null)
         {
             throw new CustomNotFoundException("Event Not Found");
         }
-        await _eventRepository.RemoveAsync(result);
+        if (partnerId != null && result.PartnerId == long.Parse(partnerId))
+        {
+            await _eventRepository.RemoveAsync(result);
+        }
+        else
+        {
+            throw new CustomNotFoundException("The event cannot be deleted");
+        }
     }
 }

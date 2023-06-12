@@ -12,4 +12,5 @@ public interface IAuthManager
     Task<bool> AddRoleToUserAsync(RegisterModel registerModel);
     Task<bool> RemoveRoleFromUserAsync(RegisterModel registerModel);
     Task<PagedList<UserViewDTO>> ListUsersAsync(UserParameters parameters);
+    Task<bool> AddPartnerToAdminAsync(AdminPartnerDTO adminPartnerDTO);
 }

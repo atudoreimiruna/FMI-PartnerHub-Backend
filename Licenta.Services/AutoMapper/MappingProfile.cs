@@ -23,6 +23,7 @@ public class MappingProfile : Profile
         CreateMap<Student, StudentViewDTO>()
             .ForMember(dest => dest.FileNames, opt => opt.MapFrom(src => src.Files.Select(x => x.Name).ToList()))
             .ForMember(dest => dest.Jobs, opt => opt.MapFrom(src => src.StudentJobs.Select(x => x.Job).ToList()))
+            .ForMember(dest => dest.Partners, opt => opt.MapFrom(src => src.StudentPartners.Select(x => x.Partner).ToList()))
             .ReverseMap();
         CreateMap<Student, StudentPutDTO>()
             .ReverseMap()
@@ -30,6 +31,9 @@ public class MappingProfile : Profile
         CreateMap<Student, StudentJobPutDTO>()
             .ForMember(dest => dest.JobId, opt => opt.MapFrom(src => src.StudentJobs.Select(x => x.JobId).FirstOrDefault()))
             .ReverseMap();
+        CreateMap<Student, StudentPartnerPutDTO>()
+           .ForMember(dest => dest.PartnerId, opt => opt.MapFrom(src => src.StudentPartners.Select(x => x.PartnerId).FirstOrDefault()))
+           .ReverseMap();
 
         CreateMap<Partner, PartnerPostDTO>().ReverseMap();
         CreateMap<Partner, PartnerViewDTO>()

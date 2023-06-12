@@ -18,4 +18,5 @@ public class Partner : BaseEntity
     public virtual ICollection<Event> Events { get; set; } = new List<Event>();
     public virtual ICollection<Job> Jobs { get; set; } = new List<Job>();
     public virtual ICollection<File> Files { get; set; } = new List<File>();
+    public virtual ICollection<StudentPartner> StudentPartners { get; set; } = new List<StudentPartner>();
 }

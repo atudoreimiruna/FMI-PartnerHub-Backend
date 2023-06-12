@@ -59,6 +59,22 @@ public class StudentController : ControllerBase
         return Ok("StudentJob DELETED successfully");
     }
 
+    [HttpPut("partner")]
+    [Authorize(AuthPolicy.User)]
+    public async Task<IActionResult> UpdatePartnerAsync([FromBody] StudentPartnerPutDTO studentDto)
+    {
+        var student = await _studentManager.UpdatePartnerAsync(studentDto);
+        return Ok(student);
+    }
+
+    [HttpDelete("by/{studentId}/{partnerId}")]
+    [Authorize(AuthPolicy.User)]
+    public async Task<IActionResult> DeleteStudentPartner([FromRoute] long studentId, [FromRoute] long partnerId)
+    {
+        await _studentManager.DeleteStudentPartnerAsync(studentId, partnerId);
+        return Ok("StudentPartner DELETED successfully");
+    }
+
     [HttpDelete("{id}")]
     [Authorize(AuthPolicy.SuperAdmin)]
     public async Task<IActionResult> DeleteStudent([FromRoute] long id)

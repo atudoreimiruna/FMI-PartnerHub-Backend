@@ -7,9 +7,9 @@ namespace Licenta.Services.Interfaces;
 
 public interface IEventManager
 {
-    Task<EventViewDTO> AddAsync(EventPostDTO eventDto);
+    Task<EventViewDTO> AddAsync(EventPostDTO eventDto, string partnerId);
     Task<PagedList<EventViewDTO>> ListEventsAsync(EventParameters parameters);
     Task<EventViewDTO> GetEventProfileByIdAsync(long id);
-    Task<EventViewDTO> UpdateAsync(EventPutDTO eventDto);
-    Task DeleteAsync(long id);
+    Task<EventViewDTO> UpdateAsync(EventPutDTO eventDto, string partnerId);
+    Task DeleteAsync(long id, string partnerId);
 }
