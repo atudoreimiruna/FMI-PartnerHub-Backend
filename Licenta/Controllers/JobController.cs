@@ -5,6 +5,7 @@ using Licenta.Services.DTOs.Job;
 using Licenta.Services.QueryParameters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Security.Claims;
 
 namespace Licenta.Api.Controllers;
 
@@ -20,10 +21,11 @@ public class JobController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin,SuperAdmin")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> AddJob([FromBody] JobPostDTO jobDto)
     {
-        var job = await _jobManager.AddAsync(jobDto);
+        var partnerId = User.FindFirstValue("partnerId");
+        var job = await _jobManager.AddAsync(jobDto, partnerId);
         return Ok(job);
     }
 
@@ -52,26 +54,29 @@ public class JobController : ControllerBase
     }
 
     [HttpPut]
-    [Authorize(Roles = "Admin,SuperAdmin")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateAsync([FromBody] JobPutDTO jobDto)
     {
-        var job = await _jobManager.UpdateAsync(jobDto);
+        var partnerId = User.FindFirstValue("partnerId");
+        var job = await _jobManager.UpdateAsync(jobDto, partnerId);
         return Ok(job);
     }
 
     [HttpPut("activated")]
-    [Authorize(Roles = "Admin,SuperAdmin")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateActivatedAsync([FromBody] JobPutActivatedDTO jobDto)
     {
-        var job = await _jobManager.UpdateActivatedAsync(jobDto);
+        var partnerId = User.FindFirstValue("partnerId");
+        var job = await _jobManager.UpdateActivatedAsync(jobDto, partnerId);
         return Ok(job);
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Admin,SuperAdmin")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteJob([FromRoute] long id)
     {
-        await _jobManager.DeleteAsync(id);
+        var partnerId = User.FindFirstValue("partnerId");
+        await _jobManager.DeleteAsync(id, partnerId);
         return Ok("Job DELETED successfully");
     }
 }

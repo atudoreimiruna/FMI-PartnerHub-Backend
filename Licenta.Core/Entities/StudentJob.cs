@@ -1,4 +1,6 @@
-﻿namespace Licenta.Core.Entities;
+﻿using Licenta.Core.Enums;
+
+namespace Licenta.Core.Entities;
 
 public class StudentJob
 {
@@ -7,4 +9,5 @@ public class StudentJob
 
     public long JobId { get; set; }
     public virtual Job Job { get; set; }
+    public StudentJobStatusEnum JobStatus { get; set; }
 }

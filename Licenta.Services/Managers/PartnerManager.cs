@@ -57,19 +57,26 @@ public class PartnerManager : IPartnerManager
         return _mapper.Map<PartnerViewDTO>(partner);
     }
 
-    public async Task<PartnerViewDTO> UpdateAsync(PartnerPutDTO partnerDto)
+    public async Task<PartnerViewDTO> UpdateAsync(PartnerPutDTO partnerDto, string partnerId)
     {
-        var partner = await _partnerRepository.FindByIdAsync(partnerDto.Id);
-
-        if (partner == null)
+        if (partnerId != null && partnerDto.Id == long.Parse(partnerId))
         {
-            throw new CustomNotFoundException("Partner Not Found");
+            var partner = await _partnerRepository.FindByIdAsync(partnerDto.Id);
+
+            if (partner == null)
+            {
+                throw new CustomNotFoundException("Partner Not Found");
+            }
+
+            _mapper.Map(partnerDto, partner);
+            await _partnerRepository.UpdateAsync(partner);
+
+            return await GetPartnerProfileByIdAsync(partnerDto.Id);
         }
-
-        _mapper.Map(partnerDto, partner);
-        await _partnerRepository.UpdateAsync(partner);
-
-        return await GetPartnerProfileByIdAsync(partnerDto.Id);
+        else
+        {
+            throw new CustomNotFoundException("The partner cannot be updated");
+        }
     }
 
     public async Task DeleteAsync(long id)

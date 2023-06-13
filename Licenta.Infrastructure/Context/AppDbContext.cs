@@ -21,8 +21,6 @@ public class AppDbContext : IdentityDbContext<
     {
 
     }
-    public DbSet<Newsletter> Newsletters { get; set; } 
-    public DbSet<Feedback> Feedbacks { get; set; }
     public DbSet<Partner> Partners { get; set; }
     public DbSet<Event> Events { get; set; }
     public DbSet<Core.Entities.File> Files { get; set; }
@@ -35,8 +33,6 @@ public class AppDbContext : IdentityDbContext<
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.ApplyConfiguration(new NewsLetterConfiguration());
-        modelBuilder.ApplyConfiguration(new FeedbackConfiguration());
         modelBuilder.ApplyConfiguration(new PartnerConfiguration());
         modelBuilder.ApplyConfiguration(new EventConfiguration());
         modelBuilder.ApplyConfiguration(new FileConfiguration());

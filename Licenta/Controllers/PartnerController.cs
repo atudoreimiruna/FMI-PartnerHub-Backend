@@ -6,6 +6,7 @@ using Licenta.Services.QueryParameters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Licenta.External.Authorization;
+using System.Security.Claims;
 
 namespace Licenta.Api.Controllers;
 
@@ -45,10 +46,11 @@ public class PartnerController : ControllerBase
     }
 
     [HttpPut]
-    [Authorize(Roles = "Admin,SuperAdmin")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateAsync([FromBody] PartnerPutDTO partnerDto)
     {
-        var partner = await _partnerManager.UpdateAsync(partnerDto);
+        var partnerId = User.FindFirstValue("partnerId");
+        var partner = await _partnerManager.UpdateAsync(partnerDto, partnerId);
         return Ok(partner);
     }
 

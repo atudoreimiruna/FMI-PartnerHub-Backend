@@ -25,13 +25,20 @@ public class JobManager : IJobManager
         _jobRepository = jobRepository;
         _mapper = mapper;
     }
-    public async Task<JobViewDTO> AddAsync(JobPostDTO jobDto)
+    public async Task<JobViewDTO> AddAsync(JobPostDTO jobDto, string partnerId)
     {
-        var job = _mapper.Map<Job>(jobDto);
+        if (partnerId != null && jobDto.PartnerId == long.Parse(partnerId))
+        {
+            var job = _mapper.Map<Job>(jobDto);
 
-        await _jobRepository.AddAsync(job);
+            await _jobRepository.AddAsync(job);
 
-        return _mapper.Map<JobViewDTO>(job);
+            return _mapper.Map<JobViewDTO>(job);
+        }
+        else
+        {
+            throw new CustomNotFoundException("The job cannot be added");
+        }
     }
 
     public async Task<PagedList<JobViewDTO>> ListJobsAsync(JobParameters parameters)
@@ -69,48 +76,69 @@ public class JobManager : IJobManager
         return _mapper.Map<JobViewDTO>(job);
     }
 
-    public async Task<JobViewDTO> UpdateAsync(JobPutDTO jobDto)
+    public async Task<JobViewDTO> UpdateAsync(JobPutDTO jobDto, string partnerId)
     {
-        var job = await _jobRepository.FindByIdAsync(jobDto.Id);
-
-        if (job == null)
+        if (partnerId != null && jobDto.Id == long.Parse(partnerId))
         {
-            throw new CustomNotFoundException("Job Not Found");
+            var job = await _jobRepository.FindByIdAsync(jobDto.Id);
+
+            if (job == null)
+            {
+                throw new CustomNotFoundException("Job Not Found");
+            }
+
+            _mapper.Map(jobDto, job);
+            if (jobDto.Experience != null) { job.Experience = jobDto.Experience.Value; }
+            if (jobDto.Type != null) { job.Type = jobDto.Type.Value; }
+            if (jobDto.PartnerId != 0) { job.PartnerId = jobDto.PartnerId; }
+
+            await _jobRepository.UpdateAsync(job);
+
+            return await GetJobProfileByIdAsync(jobDto.Id);
         }
-
-        _mapper.Map(jobDto, job);
-        if (jobDto.Experience != null) { job.Experience = jobDto.Experience.Value; }
-        if (jobDto.Type != null) { job.Type = jobDto.Type.Value; }
-        if (jobDto.PartnerId != 0) { job.PartnerId = jobDto.PartnerId; }
-
-        await _jobRepository.UpdateAsync(job);
-
-        return await GetJobProfileByIdAsync(jobDto.Id);
+        else
+        {
+            throw new CustomNotFoundException("The job cannot be updated");
+        }
     }
 
-    public async Task<JobViewDTO> UpdateActivatedAsync(JobPutActivatedDTO jobDto)
+    public async Task<JobViewDTO> UpdateActivatedAsync(JobPutActivatedDTO jobDto, string partnerId)
     {
-        var job = await _jobRepository.FindByIdAsync(jobDto.Id);
-
-        if (job == null)
+        if (partnerId != null && jobDto.Id == long.Parse(partnerId))
         {
-            throw new CustomNotFoundException("Job Not Found");
+            var job = await _jobRepository.FindByIdAsync(jobDto.Id);
+
+            if (job == null)
+            {
+                throw new CustomNotFoundException("Job Not Found");
+            }
+
+            _mapper.Map(jobDto, job);
+
+            await _jobRepository.UpdateAsync(job);
+
+            return await GetJobProfileByIdAsync(jobDto.Id);
         }
-
-        _mapper.Map(jobDto, job);
-
-        await _jobRepository.UpdateAsync(job);
-
-        return await GetJobProfileByIdAsync(jobDto.Id);
+        else
+        {
+            throw new CustomNotFoundException("The job cannot be updated");
+        }
     }
 
-    public async Task DeleteAsync(long id)
+    public async Task DeleteAsync(long id, string partnerId)
     {
         var job = await _jobRepository.FindByIdAsync(id);
         if (job == null)
         {
             throw new CustomNotFoundException("Job Not Found");
         }
-        await _jobRepository.RemoveAsync(job);
+        if (partnerId != null && job.PartnerId == long.Parse(partnerId))
+        {
+            await _jobRepository.RemoveAsync(job);
+        }
+        else
+        {
+            throw new CustomNotFoundException("The job cannot be deleted");
+        }
     }
 }

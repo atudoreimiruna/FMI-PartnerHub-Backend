@@ -132,6 +132,7 @@ public class AuthManager : IAuthManager
             }
         }
 
+        // TODO: verificare daca user ul exista in entitatea student si daca da, trebuie sters
         var roleExists = await _roleManager.RoleExistsAsync(registerModel.Role.ToString());
         if (!roleExists)
         {

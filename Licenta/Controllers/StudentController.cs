@@ -75,6 +75,8 @@ public class StudentController : ControllerBase
         return Ok("StudentPartner DELETED successfully");
     }
 
+    // TODO: add endpoint for job applications 
+
     [HttpDelete("{id}")]
     [Authorize(AuthPolicy.SuperAdmin)]
     public async Task<IActionResult> DeleteStudent([FromRoute] long id)
