@@ -10,6 +10,6 @@ public class EventParameters : BaseParameters
     public string Time { get; set; }
     public DateTime Date { get; set; }
     public string PartnerName { get; set; }
-    public string PartnerId { get; set; }
+    public long PartnerId { get; set; }
     public DateTime LastUpdated { get; set; }
 }

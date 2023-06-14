@@ -68,15 +68,15 @@ public class EventManager : IEventManager
 
     public async Task<EventViewDTO> UpdateAsync(EventPutDTO eventDto, string partnerId)
     {
-        if (partnerId != null && eventDto.Id == long.Parse(partnerId))
+        var result = await _eventRepository.FindByIdAsync(eventDto.Id);
+
+        if (result == null)
         {
-            var result = await _eventRepository.FindByIdAsync(eventDto.Id);
+            throw new CustomNotFoundException("Event Not Found");
+        }
 
-            if (result == null)
-            {
-                throw new CustomNotFoundException("Event Not Found");
-            }
-
+        if (partnerId != null && result.PartnerId == long.Parse(partnerId))
+        {
             _mapper.Map(eventDto, result);
 
             if (eventDto.Date != null)

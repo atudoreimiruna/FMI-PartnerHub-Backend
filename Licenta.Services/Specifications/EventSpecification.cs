@@ -28,9 +28,9 @@ public class EventSpecification : Specification<Event>
             AddCriteria(x => x.Partner.Name.ToLower().Contains(parameters.PartnerName.ToLower()));
         }
 
-        if (!string.IsNullOrEmpty(parameters.PartnerName))
+        if (parameters.PartnerId != null)
         {
-            AddCriteria(x => x.Partner.Id.Equals(parameters.PartnerId));
+            AddCriteria(x => x.Partner.Id == parameters.PartnerId);
         }
 
         switch (parameters.OrderBy)
