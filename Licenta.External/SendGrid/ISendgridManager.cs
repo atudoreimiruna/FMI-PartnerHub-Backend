@@ -2,5 +2,6 @@
 
 public interface ISendgridManager
 {
-    Task SendEmailTemplate(SendgridUser emailDto);
+    Task SendEmailTemplate(List<SendgridUser> emailDtos);
+    Task<string> CreateHtml();
 }

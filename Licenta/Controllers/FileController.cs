@@ -1,5 +1,4 @@
 ﻿using Licenta.Core.Enums;
-using Licenta.External.Authorization;
 using Licenta.Services.DTOs.Blob;
 using Licenta.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

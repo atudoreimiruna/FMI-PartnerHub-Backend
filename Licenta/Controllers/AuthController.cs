@@ -8,6 +8,8 @@ using Microsoft.Identity.Web;
 using System.Security.Claims;
 using Licenta.External.Authorization;
 using Licenta.Services.QueryParameters;
+using Licenta.External.SendGrid;
+using System.Collections.Generic;
 
 namespace Licenta.Api.Controllers;
 
@@ -16,10 +18,11 @@ namespace Licenta.Api.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthManager _authManager;
-
-    public AuthController(IAuthManager authManager)
+    private readonly ISendgridManager _sendGridManager;
+    public AuthController(IAuthManager authManager, ISendgridManager sendGridManager)
     {
         _authManager = authManager;
+        _sendGridManager = sendGridManager;
     }
 
     [HttpPost("Login")]
@@ -106,5 +109,12 @@ public class AuthController : ControllerBase
     {
         var result = await _authManager.Refresh(refreshModel);
         return !result.Contains("Bad") ? Ok(result) : BadRequest("Failed to refresh!");
+    }
+
+    [HttpPost("email")]
+    public async Task<IActionResult> SendEmail([FromBody] List<SendgridUser> emailDtos)
+    {
+        var result = _sendGridManager.SendEmailTemplate(emailDtos);
+        return Ok(result);
     }
 }

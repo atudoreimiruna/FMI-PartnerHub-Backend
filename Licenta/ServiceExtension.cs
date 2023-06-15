@@ -1,4 +1,5 @@
 ﻿using Licenta.Core.Interfaces;
+using Licenta.External.SendGrid;
 using Licenta.Infrastructure.Repository;
 using Licenta.Infrastructure.Seeders;
 using Licenta.Services.Helpers;
@@ -22,6 +23,7 @@ public static class ServiceExtension
 
         services.AddTransient<IAuthManager, AuthManager>();
         services.AddTransient<ITokenHelper, TokenHelper>();
+        services.AddTransient<ISendgridManager, SendgridManager>();
         services.AddTransient<DataSeeder>();
     }
 }

@@ -218,9 +218,9 @@ public class Startup
 
         initialSeed.CreateRoles();
 
-        //RecurringJob.AddOrUpdate<IHangfireManager>(
-        //    "Run once a day at midnight",
-        //    hangfireManager => hangfireManager.DropData(),
-        //    "0 0 * * *");
+        RecurringJob.AddOrUpdate<IHangfireManager>(
+            "Run once a month",
+            hangfireManager => hangfireManager.SendMonthlyEmail(),
+            "0 9 1 * *");
     }
 }

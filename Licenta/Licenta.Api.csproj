@@ -38,4 +38,19 @@
 		<ProjectReference Include="..\Licenta.Infrastructure\Licenta.Infrastructure.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Update="Resources\EventsEmail.html">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Resources\FinalEmail.html">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Resources\JobsEmail.html">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Resources\PartnersEmail.html">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
 </Project>
