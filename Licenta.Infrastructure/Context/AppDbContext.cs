@@ -28,6 +28,7 @@ public class AppDbContext : IdentityDbContext<
     public DbSet<Student> Students { get; set; }
     public DbSet<StudentJob> StudentJobs { get; set; }
     public DbSet<StudentPartner> StudentPartners { get; set; }
+    public DbSet<Model> Models { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

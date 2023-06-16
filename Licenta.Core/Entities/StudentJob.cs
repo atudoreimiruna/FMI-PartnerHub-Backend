@@ -10,4 +10,5 @@ public class StudentJob
     public long JobId { get; set; }
     public virtual Job Job { get; set; }
     public StudentJobStatusEnum JobStatus { get; set; }
+    public StudentJobRatingEnum JobRating { get; set; }
 }

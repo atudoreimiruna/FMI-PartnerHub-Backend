@@ -1,9 +1,12 @@
 ﻿using Licenta.Core.Interfaces;
+using Licenta.External.CSV;
+using Licenta.External.ML;
 using Licenta.External.SendGrid;
 using Licenta.Infrastructure.Repository;
 using Licenta.Infrastructure.Seeders;
 using Licenta.Services.Helpers;
 using Licenta.Services.Interfaces;
+using Licenta.Services.Interfaces.External;
 using Licenta.Services.Managers;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -24,6 +27,8 @@ public static class ServiceExtension
         services.AddTransient<IAuthManager, AuthManager>();
         services.AddTransient<ITokenHelper, TokenHelper>();
         services.AddTransient<ISendgridManager, SendgridManager>();
+        services.AddTransient<ICSVService, CSVService>();
+        services.AddTransient<IModelService, ModelService>();
         services.AddTransient<DataSeeder>();
     }
 }

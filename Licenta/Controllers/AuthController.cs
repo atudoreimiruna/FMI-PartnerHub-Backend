@@ -10,6 +10,10 @@ using Licenta.External.Authorization;
 using Licenta.Services.QueryParameters;
 using Licenta.External.SendGrid;
 using System.Collections.Generic;
+using Licenta.Services.DTOs.CSV;
+using Licenta.External.CSV;
+using Licenta.External.ML;
+using Licenta.Services.Interfaces.External;
 
 namespace Licenta.Api.Controllers;
 
@@ -19,10 +23,15 @@ public class AuthController : ControllerBase
 {
     private readonly IAuthManager _authManager;
     private readonly ISendgridManager _sendGridManager;
-    public AuthController(IAuthManager authManager, ISendgridManager sendGridManager)
+    private readonly ICSVService _csvService;
+    private readonly IModelService _modelService;
+
+    public AuthController(IAuthManager authManager, ISendgridManager sendGridManager, ICSVService csvService, IModelService modelService)
     {
         _authManager = authManager;
         _sendGridManager = sendGridManager;
+        _csvService = csvService;
+        _modelService = modelService;
     }
 
     [HttpPost("Login")]
@@ -116,5 +125,19 @@ public class AuthController : ControllerBase
     {
         var result = _sendGridManager.SendEmailTemplate(emailDtos);
         return Ok(result);
+    }
+
+    [HttpPost("csv")]
+    public async Task<IActionResult> PostCSV([FromBody] List<RecommendationRatingTrainDTO> ratingDtos)
+    {
+        var result = _csvService.CreateCSV(ratingDtos);
+        return Ok(result);
+    }
+
+    [HttpPost("model_training")]
+    public async Task<IActionResult> TrainingModel()
+    {
+        await _modelService.RunModelAsync();
+        return Ok();
     }
 }

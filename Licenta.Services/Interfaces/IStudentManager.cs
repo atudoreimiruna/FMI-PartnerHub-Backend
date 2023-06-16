@@ -1,4 +1,6 @@
-﻿using Licenta.Services.DTOs.Student;
+﻿using Licenta.Services.DTOs.Job;
+using Licenta.Services.DTOs.Student;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Licenta.Services.Interfaces;
@@ -13,4 +15,5 @@ public interface IStudentManager
     Task<StudentViewDTO> UpdatePartnerAsync(StudentPartnerPutDTO studentDto);
     Task DeleteStudentPartnerAsync(long studentId, long partnerId);
     Task DeleteStudentJobAsync(long studentId, long jobId);
+    Task<List<JobRecommendDTO>> GetRecommendedJobs(long id);
 }

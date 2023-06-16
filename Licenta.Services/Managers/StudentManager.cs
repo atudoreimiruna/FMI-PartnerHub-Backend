@@ -1,10 +1,15 @@
 ﻿using AutoMapper;
 using Licenta.Core.Entities;
+using Licenta.Core.Extensions.PagedList;
 using Licenta.Core.Interfaces;
+using Licenta.Services.DTOs.Job;
 using Licenta.Services.DTOs.Student;
 using Licenta.Services.Exceptions;
 using Licenta.Services.Interfaces;
+using Licenta.Services.Interfaces.External;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,17 +20,20 @@ public class StudentManager : IStudentManager
     private readonly IRepository<Student> _studentRepository;
     private readonly IRepository<StudentJob> _studentJobRepository;
     private readonly IRepository<StudentPartner> _studentPartnerRepository;
+    private readonly IModelService _modelService;
     private readonly IMapper _mapper;
 
     public StudentManager(
         IRepository<Student> studentRepository,
         IRepository<StudentJob> studentJobRepository,
         IRepository<StudentPartner> studentPartnerRepository,
+        IModelService modelService,
         IMapper mapper)
     {
         _studentRepository = studentRepository;
         _studentJobRepository = studentJobRepository;
         _studentPartnerRepository = studentPartnerRepository;
+        _modelService = modelService;
         _mapper = mapper;
     }
 
@@ -165,5 +173,45 @@ public class StudentManager : IStudentManager
             throw new CustomNotFoundException("Student Not Found");
         }
         await _studentRepository.RemoveAsync(student);
+    }
+
+    public async Task<List<JobRecommendDTO>> GetRecommendedJobs(long id)
+    {
+        var student = await _studentRepository
+            .AsQueryable()
+            .Include(x => x.Files)
+            .Include(x => x.StudentJobs)
+            .ThenInclude(x => x.Job)
+            .ThenInclude(x => x.Partner)
+            .Where(x => x.Id == id)
+            .FirstOrDefaultAsync();
+
+        if (student == null)
+        {
+            throw new CustomNotFoundException("Student Not Found");
+        }
+
+        // joburile pe care studentul nu le a evaluat si au rating mai mare de 3
+        var bestJobs = await _studentJobRepository
+            .AsQueryable()
+            .Where(x => x.StudentId != student.Id && (x.JobRating == StudentJobRatingEnum.VeryInterested || x.JobRating == StudentJobRatingEnum.SomewhatInterested))
+            .Take(10)
+            .ToListAsync();
+
+        var recommendedJobs = bestJobs
+            .DistinctBy(x => x.StudentId)
+            .OrderByDescending(x => _modelService
+            .UseModelForSinglePrediction(new DTOs.Model.JobRating
+            {
+                StudentId= student.Id,
+                JobId = x.JobId
+            }).Score)
+            .Take(5)
+            .ToList();
+
+        foreach (var job in recommendedJobs) { Console.WriteLine("Job " + job.JobId + " is recommended for user " + id); }
+
+        return bestJobs.Select(_mapper.Map<JobRecommendDTO>).ToList();
+
     }
 }

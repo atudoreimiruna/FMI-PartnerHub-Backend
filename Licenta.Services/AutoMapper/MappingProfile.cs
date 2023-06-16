@@ -67,6 +67,13 @@ public class MappingProfile : Profile
             .ForMember(opt => opt.PartnerId, src => src.Ignore())
             .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
+        CreateMap<StudentJob, JobRecommendDTO>()
+             .ForMember(opt => opt.Id, opt => opt.MapFrom(src => src.JobId))
+             .ForMember(opt => opt.Title, opt => opt.MapFrom(src => src.Job.Title))
+             .ForMember(opt => opt.Type, opt => opt.MapFrom(src => src.Job.Type))
+             .ForMember(opt => opt.LogoImageUrl, opt => opt.MapFrom(src => src.Job.Partner.LogoImageUrl))
+             .ReverseMap();
+
         /// <summary>
         /// Mappings between PagedList and PagedList.
         /// </summary>
