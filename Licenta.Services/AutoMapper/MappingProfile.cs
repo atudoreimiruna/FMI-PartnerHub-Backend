@@ -71,7 +71,11 @@ public class MappingProfile : Profile
              .ForMember(opt => opt.Id, opt => opt.MapFrom(src => src.JobId))
              .ForMember(opt => opt.Title, opt => opt.MapFrom(src => src.Job.Title))
              .ForMember(opt => opt.Type, opt => opt.MapFrom(src => src.Job.Type))
-             .ForMember(opt => opt.LogoImageUrl, opt => opt.MapFrom(src => src.Job.Partner.LogoImageUrl))
+             .ForMember(opt => opt.PartnerName, opt => opt.MapFrom(src => src.Job.Partner.Name))
+             .ForMember(opt => opt.Address, opt => opt.MapFrom(src => src.Job.Address))
+             .ForMember(opt => opt.Salary, opt => opt.MapFrom(src => src.Job.Salary))
+             .ForMember(opt => opt.MinExperience, opt => opt.MapFrom(src => src.Job.MinExperience))
+             .ForMember(opt => opt.MaxExperience, opt => opt.MapFrom(src => src.Job.MaxExperience))
              .ReverseMap();
 
         /// <summary>

@@ -189,7 +189,7 @@ public class Startup
 
         services.AddHangfireServer();
     }
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DataSeeder initialSeed)
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DataSeeder initialSeed, IModelService modelService)
     {
         if (env.IsDevelopment())
         {
@@ -217,6 +217,8 @@ public class Startup
         });
 
         initialSeed.CreateRoles();
+
+        modelService.RunModelAsync();
 
         RecurringJob.AddOrUpdate<IHangfireManager>(
             "Run once a month",

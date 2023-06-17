@@ -15,5 +15,5 @@ public interface IStudentManager
     Task<StudentViewDTO> UpdatePartnerAsync(StudentPartnerPutDTO studentDto);
     Task DeleteStudentPartnerAsync(long studentId, long partnerId);
     Task DeleteStudentJobAsync(long studentId, long jobId);
-    Task<List<JobRecommendDTO>> GetRecommendedJobs(long id);
+    Task<List<JobRecommendDTO>> GetRecommendedJobs(string email);
 }

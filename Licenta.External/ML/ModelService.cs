@@ -108,7 +108,34 @@ public class ModelService : IModelService
         predictionEngine = mlContext.Model.CreatePredictionEngine<JobRating, JobRatingPrediction>(model);
 
         await SaveModelAsync(mlContext, trainingDataView.Schema, model);
+
     }
 }
 
+//public async Task LoadDataAgain()
+//{
+//    var model = await _modelRepository
+//        .AsQueryable()
+//        .Where(x => x.Type == ModelEnum.JobRecommendation)
+//        .OrderByDescending(x => x.CreatedAt)
+//        .FirstOrDefaultAsync();
+//    if (model is null)
+//    {
+//        throw new CustomNotFoundException("No model found");
+//    }
+//    var stream = new MemoryStream(model.Content);
+//    var mlModel = MlContext.Model.Load(stream, out var _);
+//    predictionEngine = MlContext.Model.CreatePredictionEngine<JobRating, JobRatingPrediction>(mlModel);
+
+
+
+//    var streamToSave = new MemoryStream();
+//    MLContext.Model.Save(model, trainingDataViewSchema, stream);
+//    var bytes = stream.ToArray();
+//    await _modelRepository.AddAsync(new Model
+//    {
+//        Type = ModelEnum.JobRecommendation,
+//        Content = bytes
+//    });
+//}
 

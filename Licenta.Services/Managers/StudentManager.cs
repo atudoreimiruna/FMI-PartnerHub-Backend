@@ -175,7 +175,7 @@ public class StudentManager : IStudentManager
         await _studentRepository.RemoveAsync(student);
     }
 
-    public async Task<List<JobRecommendDTO>> GetRecommendedJobs(long id)
+    public async Task<List<JobRecommendDTO>> GetRecommendedJobs(string email)
     {
         var student = await _studentRepository
             .AsQueryable()
@@ -183,7 +183,7 @@ public class StudentManager : IStudentManager
             .Include(x => x.StudentJobs)
             .ThenInclude(x => x.Job)
             .ThenInclude(x => x.Partner)
-            .Where(x => x.Id == id)
+            .Where(x => x.Email == email)
             .FirstOrDefaultAsync();
 
         if (student == null)
@@ -209,9 +209,8 @@ public class StudentManager : IStudentManager
             .Take(5)
             .ToList();
 
-        foreach (var job in recommendedJobs) { Console.WriteLine("Job " + job.JobId + " is recommended for user " + id); }
+        foreach (var job in recommendedJobs) { Console.WriteLine("Job " + job.JobId + " is recommended for user " + email); }
 
         return bestJobs.Select(_mapper.Map<JobRecommendDTO>).ToList();
-
     }
 }

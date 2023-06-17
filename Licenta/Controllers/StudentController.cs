@@ -10,7 +10,7 @@ namespace Licenta.Api.Controllers;
 
 [Route("api/students")]
 [ApiController]
-//[Authorize(AuthenticationSchemes = $"{JwtBearerDefaults.AuthenticationScheme}")]
+[Authorize(AuthenticationSchemes = $"{JwtBearerDefaults.AuthenticationScheme}")]
 public class StudentController : ControllerBase
 {
     private readonly IStudentManager _studentManager;
@@ -85,10 +85,11 @@ public class StudentController : ControllerBase
         return Ok("Student DELETED successfully");
     }
 
-    [HttpPut("jobs-for-student/{id}")]
-    public async Task<IActionResult> JobForStudent([FromRoute] long id)
+    [HttpGet("jobs-for-student/{email}")]
+    [Authorize(AuthPolicy.User)]
+    public async Task<IActionResult> JobForStudent([FromRoute] string email)
     {
-        var result = await _studentManager.GetRecommendedJobs(id);
+        var result = await _studentManager.GetRecommendedJobs(email);
         return Ok(result);
     }
 }
