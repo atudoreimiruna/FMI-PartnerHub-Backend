@@ -2,6 +2,6 @@
 
 public enum StudentJobStatusEnum
 {
-    Favorite = 0, 
-    Application = 1
+    Favorite = 1, 
+    Application = 2
 }

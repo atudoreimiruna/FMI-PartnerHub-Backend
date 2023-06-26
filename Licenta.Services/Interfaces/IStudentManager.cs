@@ -1,4 +1,5 @@
-﻿using Licenta.Services.DTOs.Job;
+﻿using Licenta.Core.Extensions.PagedList;
+using Licenta.Services.DTOs.Job;
 using Licenta.Services.DTOs.Student;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -16,4 +17,6 @@ public interface IStudentManager
     Task DeleteStudentPartnerAsync(long studentId, long partnerId);
     Task DeleteStudentJobAsync(long studentId, long jobId);
     Task<List<JobRecommendDTO>> GetRecommendedJobs(string email);
+    Task<StudentJobViewDTO> GetStudentJobAsync(long studentId, long jobId);
+    Task<PagedList<StudentJobViewDTO>> GetStudentJobsAsync(string email);
 }

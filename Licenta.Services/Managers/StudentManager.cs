@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Hangfire.Common;
 using Licenta.Core.Entities;
 using Licenta.Core.Extensions.PagedList;
 using Licenta.Core.Interfaces;
@@ -112,11 +113,27 @@ public class StudentManager : IStudentManager
             throw new CustomNotFoundException("Student Not Found");
         }
 
-        var studentJob = new StudentJob { StudentId = studentDto.Id, JobId = studentDto.JobId };
-        await _studentJobRepository.AddAsync(studentJob);
+        var studentJob = await _studentJobRepository
+            .AsQueryable()
+            .Where(x => x.JobId == studentDto.JobId && x.StudentId == studentDto.Id)
+            .FirstOrDefaultAsync();
 
-        _mapper.Map(studentDto, student);
-        await _studentRepository.UpdateAsync(student);
+        if (studentJob == null)
+        {
+            var newStudentJob = new StudentJob
+            {
+                StudentId = studentDto.Id,
+                JobId = studentDto.JobId,
+                JobStatus = studentDto.JobStatus,
+                JobRating = studentDto.JobRating
+            };
+            await _studentJobRepository.AddAsync(newStudentJob);
+        }
+        else
+        {
+            _mapper.Map(studentDto, studentJob);
+            await _studentRepository.UpdateAsync(student);
+        }
 
         return await GetStudentProfileByIdAsync(studentDto.Id);
     }
@@ -174,6 +191,42 @@ public class StudentManager : IStudentManager
         }
         await _studentRepository.RemoveAsync(student);
     }
+
+    public async Task<StudentJobViewDTO> GetStudentJobAsync(long studentId, long jobId)
+    {
+        var studentJob = await _studentJobRepository
+            .AsQueryable()
+            .Where(x => x.JobId == jobId && x.StudentId == studentId)
+            .FirstOrDefaultAsync();
+
+        if (studentJob == null)
+        {
+            throw new CustomNotFoundException("StudentJob Not Found");
+        }
+        return _mapper.Map<StudentJobViewDTO>(studentJob);
+    }
+
+    public async Task<PagedList<StudentJobViewDTO>> GetStudentJobsAsync(string email)
+    {
+        var student = await _studentRepository
+            .AsQueryable()
+            .Include(x => x.StudentJobs)
+            .ThenInclude(x => x.Job)
+            .Where(x => x.Email == email)
+            .FirstOrDefaultAsync();
+
+        var studentJobs = await _studentJobRepository
+            .AsQueryable()
+            .Where(x => x.StudentId == student.Id)
+            .ToListAsync();
+
+        if (studentJobs == null)
+        {
+            throw new CustomNotFoundException("StudentJobs Not Found");
+        }
+        return _mapper.Map<PagedList<StudentJobViewDTO>>(studentJobs);
+    }
+
 
     public async Task<List<JobRecommendDTO>> GetRecommendedJobs(string email)
     {

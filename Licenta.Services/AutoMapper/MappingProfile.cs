@@ -28,9 +28,18 @@ public class MappingProfile : Profile
         CreateMap<Student, StudentPutDTO>()
             .ReverseMap()
             .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
-        CreateMap<Student, StudentJobPutDTO>()
-            .ForMember(dest => dest.JobId, opt => opt.MapFrom(src => src.StudentJobs.Select(x => x.JobId).FirstOrDefault()))
+        CreateMap<StudentJob, StudentJobPutDTO>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.StudentId))
+            .ForMember(dest => dest.JobId, opt => opt.MapFrom(src => src.JobId))
+            .ForMember(dest => dest.JobStatus, opt => opt.MapFrom(src => src.JobStatus))
+            .ForMember(dest => dest.JobRating, opt => opt.MapFrom(src => src.JobRating))
             .ReverseMap();
+        CreateMap<StudentJob, StudentJobViewDTO>()
+           .ForMember(dest => dest.StudentId, opt => opt.MapFrom(src => src.StudentId))
+           .ForMember(dest => dest.JobId, opt => opt.MapFrom(src => src.JobId))
+           .ForMember(dest => dest.JobStatus, opt => opt.MapFrom(src => src.JobStatus))
+           .ForMember(dest => dest.JobRating, opt => opt.MapFrom(src => src.JobRating))
+           .ReverseMap();
         CreateMap<Student, StudentPartnerPutDTO>()
            .ForMember(dest => dest.PartnerId, opt => opt.MapFrom(src => src.StudentPartners.Select(x => x.PartnerId).FirstOrDefault()))
            .ReverseMap();

@@ -75,6 +75,14 @@ public class StudentController : ControllerBase
         return Ok("StudentPartner DELETED successfully");
     }
 
+    [HttpGet("by/{studentId}/{jobId}")]
+    [Authorize(AuthPolicy.User)]
+    public async Task<IActionResult> GetStudentJob([FromRoute] long studentId, [FromRoute] long jobId)
+    {
+        var studentJob = await _studentManager.GetStudentJobAsync(studentId, jobId);
+        return Ok(studentJob);
+    }
+
     // TODO: add endpoint for job applications 
 
     [HttpDelete("{id}")]
@@ -90,6 +98,14 @@ public class StudentController : ControllerBase
     public async Task<IActionResult> JobForStudent([FromRoute] string email)
     {
         var result = await _studentManager.GetRecommendedJobs(email);
+        return Ok(result);
+    }
+
+    [HttpGet("jobs/{email}")]
+    [Authorize(AuthPolicy.User)]
+    public async Task<IActionResult> JobsForStudent([FromRoute] string email)
+    {
+        var result = await _studentManager.GetStudentJobsAsync(email);
         return Ok(result);
     }
 }

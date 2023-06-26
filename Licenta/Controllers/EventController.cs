@@ -1,5 +1,6 @@
 ﻿using Licenta.Services.DTOs.Event;
 using Licenta.Services.Interfaces;
+using Licenta.Services.Managers;
 using Licenta.Services.QueryParameters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -33,8 +34,8 @@ public class EventController : ControllerBase
     [Authorize(Roles = "User,Admin,SuperAdmin")]
     public async Task<IActionResult> ListEvents([FromQuery] EventParameters parameters)
     {
-        var result = await _eventManager.ListEventsAsync(parameters);
-        return Ok(result);
+        var events = await _eventManager.ListEventsAsync(parameters);
+        return Ok(events);
     }
 
     [HttpGet("{id}")]

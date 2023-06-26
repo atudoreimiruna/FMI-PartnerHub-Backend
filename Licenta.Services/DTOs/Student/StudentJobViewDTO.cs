@@ -2,10 +2,10 @@
 
 namespace Licenta.Services.DTOs.Student;
 
-public class StudentJobPutDTO
+public class StudentJobViewDTO
 {
-    public long Id { get; set; }
-    public long JobId { get; set;}
+    public long StudentId { get; set; }
+    public long JobId { get; set; }
     public StudentJobStatusEnum JobStatus { get; set; }
     public StudentJobRatingEnum JobRating { get; set; }
 }

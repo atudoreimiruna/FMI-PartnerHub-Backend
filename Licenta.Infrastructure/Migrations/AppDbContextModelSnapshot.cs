@@ -62,7 +62,7 @@ namespace Licenta.Infrastructure.Migrations
 
                     b.HasIndex("PartnerId");
 
-                    b.ToTable("Events");
+                    b.ToTable("Events", (string)null);
 
                     b.HasData(
                         new
@@ -146,7 +146,7 @@ namespace Licenta.Infrastructure.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Files");
+                    b.ToTable("Files", (string)null);
                 });
 
             modelBuilder.Entity("Licenta.Core.Entities.Job", b =>
@@ -208,7 +208,7 @@ namespace Licenta.Infrastructure.Migrations
 
                     b.HasIndex("PartnerId");
 
-                    b.ToTable("Jobs");
+                    b.ToTable("Jobs", (string)null);
 
                     b.HasData(
                         new
@@ -271,7 +271,7 @@ namespace Licenta.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Models");
+                    b.ToTable("Models", (string)null);
                 });
 
             modelBuilder.Entity("Licenta.Core.Entities.Partner", b =>
@@ -329,7 +329,7 @@ namespace Licenta.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Partners");
+                    b.ToTable("Partners", (string)null);
 
                     b.HasData(
                         new
@@ -451,7 +451,7 @@ namespace Licenta.Infrastructure.Migrations
                     b.HasIndex("Name", "Email")
                         .IsUnique();
 
-                    b.ToTable("Students");
+                    b.ToTable("Students", (string)null);
                 });
 
             modelBuilder.Entity("Licenta.Core.Entities.StudentJob", b =>
@@ -472,7 +472,7 @@ namespace Licenta.Infrastructure.Migrations
 
                     b.HasIndex("JobId");
 
-                    b.ToTable("StudentJobs");
+                    b.ToTable("StudentJobs", (string)null);
                 });
 
             modelBuilder.Entity("Licenta.Core.Entities.StudentPartner", b =>
@@ -487,7 +487,7 @@ namespace Licenta.Infrastructure.Migrations
 
                     b.HasIndex("PartnerId");
 
-                    b.ToTable("StudentPartners");
+                    b.ToTable("StudentPartners", (string)null);
                 });
 
             modelBuilder.Entity("Licenta.Core.Entities.User", b =>
