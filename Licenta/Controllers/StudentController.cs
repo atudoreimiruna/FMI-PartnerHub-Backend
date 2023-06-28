@@ -5,6 +5,7 @@ using Licenta.Services.DTOs.Student;
 using Licenta.External.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Security.Claims;
 
 namespace Licenta.Api.Controllers;
 
@@ -81,6 +82,16 @@ public class StudentController : ControllerBase
     {
         var studentJob = await _studentManager.GetStudentJobAsync(studentId, jobId);
         return Ok(studentJob);
+    }
+
+    [HttpGet("partnerStudents/{partnerId}")]
+    [Authorize(AuthPolicy.Admin)]
+    public async Task<IActionResult> GetStudentPartners([FromRoute] long partnerId)
+    {
+        var tokenId = User.FindFirstValue("partnerId");
+
+        var studentPartners = await _studentManager.GetStudentPartnersAsync(partnerId, tokenId);
+        return Ok(studentPartners);
     }
 
     // TODO: add endpoint for job applications 

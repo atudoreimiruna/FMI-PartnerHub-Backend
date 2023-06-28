@@ -5,6 +5,7 @@ using Licenta.Services.DTOs.Auth;
 using Licenta.Services.DTOs.Event;
 using Licenta.Services.DTOs.Job;
 using Licenta.Services.DTOs.Partner;
+using Licenta.Services.DTOs.Practice;
 using Licenta.Services.DTOs.Student;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,11 @@ public class MappingProfile : Profile
         CreateMap<User, UserViewDTO>()
             .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => src.UserRoles.Select(x => x.Role.Name).ToList()))
             .ReverseMap();
+
+        CreateMap<Practice, PracticeViewDTO>().ReverseMap();
+        CreateMap<Practice, PracticePutDTO>()
+            .ReverseMap()
+            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
         CreateMap<Student, StudentPostDTO>().ReverseMap();
         CreateMap<Student, StudentViewDTO>()
@@ -40,6 +46,19 @@ public class MappingProfile : Profile
            .ForMember(dest => dest.JobStatus, opt => opt.MapFrom(src => src.JobStatus))
            .ForMember(dest => dest.JobRating, opt => opt.MapFrom(src => src.JobRating))
            .ReverseMap();
+
+        CreateMap<StudentPartner, StudentPartnerViewDTO>()
+           .ForMember(dest => dest.PartnerId, opt => opt.MapFrom(src => src.PartnerId))
+           .ForMember(dest => dest.Student, opt => opt.MapFrom(src => src.Student))
+           .ReverseMap();
+
+        CreateMap<StudentJob, StudentJobDetailsDTO>()
+          .ForMember(dest => dest.Student, opt => opt.MapFrom(src => src.Student))
+          .ForMember(dest => dest.JobId, opt => opt.MapFrom(src => src.JobId))
+          .ForMember(dest => dest.JobStatus, opt => opt.MapFrom(src => src.JobStatus))
+          .ForMember(dest => dest.JobRating, opt => opt.MapFrom(src => src.JobRating))
+          .ReverseMap();
+
         CreateMap<Student, StudentPartnerPutDTO>()
            .ForMember(dest => dest.PartnerId, opt => opt.MapFrom(src => src.StudentPartners.Select(x => x.PartnerId).FirstOrDefault()))
            .ReverseMap();
@@ -66,6 +85,7 @@ public class MappingProfile : Profile
         CreateMap<Job, JobViewDTO>()
             .ForMember(dest => dest.PartnerLogo, opt => opt.MapFrom(src => src.Partner.LogoImageUrl))
             .ForMember(dest => dest.PartnerName, opt => opt.MapFrom(src => src.Partner.Name))
+            .ForMember(dest => dest.JobStudents, opt => opt.MapFrom(src => src.StudentJobs))
             .ReverseMap();
 
         CreateMap<Job, JobPutActivatedDTO>().ReverseMap();

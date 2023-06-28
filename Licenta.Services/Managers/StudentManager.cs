@@ -206,6 +206,30 @@ public class StudentManager : IStudentManager
         return _mapper.Map<StudentJobViewDTO>(studentJob);
     }
 
+    public async Task<PagedList<StudentViewDTO>> GetStudentPartnersAsync(long partnerId, string tokenId)
+    {
+        if (tokenId != null && partnerId == long.Parse(tokenId))
+        {
+            var studentPartners = await _studentPartnerRepository
+                .AsQueryable()
+                .Include(x => x.Student)
+                .ThenInclude(x => x.Files)
+                .Where(x => x.PartnerId == partnerId)
+                .ToListAsync();
+
+            var students = new List<Student>();
+            foreach(var studentPartner in studentPartners)
+            {
+                students.Add(studentPartner.Student);
+            }
+            return _mapper.Map<PagedList<StudentViewDTO>>(students);
+        }
+        else
+        {
+            throw new CustomNotFoundException("Students Not Found");
+        }
+    }
+
     public async Task<PagedList<StudentJobViewDTO>> GetStudentJobsAsync(string email)
     {
         var student = await _studentRepository

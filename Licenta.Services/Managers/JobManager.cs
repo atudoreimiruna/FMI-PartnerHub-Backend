@@ -52,6 +52,9 @@ public class JobManager : IJobManager
     {
         var jobs = await _jobRepository
             .AsQueryable()
+            .Include(x => x.StudentJobs)
+            .ThenInclude(x => x.Student)
+            .Include(x => x.Partner)
             .Where(x => x.PartnerId == partnerId)
             .ToListAsync();
 

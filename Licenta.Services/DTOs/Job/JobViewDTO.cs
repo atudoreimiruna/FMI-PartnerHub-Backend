@@ -1,5 +1,7 @@
 ﻿using Licenta.Core.Enums;
 using Licenta.Services.DTOs.Base;
+using Licenta.Services.DTOs.Student;
+using System.Collections.Generic;
 
 namespace Licenta.Services.DTOs.Job;
 
@@ -18,4 +20,5 @@ public class JobViewDTO : BaseDto
     public bool Activated { get; set; }
     public string PartnerLogo { get; set; }
     public string PartnerName { get; set; }
+    public List<StudentJobDetailsDTO> JobStudents { get; set; }
 }

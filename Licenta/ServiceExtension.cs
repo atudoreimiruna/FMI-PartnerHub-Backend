@@ -23,6 +23,7 @@ public static class ServiceExtension
         services.AddTransient<IFileManager, FileManager>();
         services.AddTransient<IStudentManager, StudentManager>();
         services.AddTransient<IEventManager, EventManager>();
+        services.AddTransient<IPracticeManager, PracticeManager>();
 
         services.AddTransient<IAuthManager, AuthManager>();
         services.AddTransient<ITokenHelper, TokenHelper>();

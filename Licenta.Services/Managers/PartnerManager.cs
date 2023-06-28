@@ -88,4 +88,18 @@ public class PartnerManager : IPartnerManager
         }
         await _partnerRepository.RemoveAsync(partner);
     }
+
+    public async Task DeleteAsync(PartnerDeleteDTO partnerDto)
+    {
+        var partner = await _partnerRepository
+            .AsQueryable()
+            .Where(x => x.Name == partnerDto.Name)
+            .FirstOrDefaultAsync();
+
+        if (partner == null)
+        {
+            throw new CustomNotFoundException("Partner Not Found");
+        }
+        await _partnerRepository.RemoveAsync(partner);
+    }
 }

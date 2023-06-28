@@ -29,6 +29,7 @@ public class AppDbContext : IdentityDbContext<
     public DbSet<StudentJob> StudentJobs { get; set; }
     public DbSet<StudentPartner> StudentPartners { get; set; }
     public DbSet<Model> Models { get; set; }
+    public DbSet<Practice> Practices { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -41,6 +42,7 @@ public class AppDbContext : IdentityDbContext<
         modelBuilder.ApplyConfiguration(new StudentConfiguration());
         modelBuilder.ApplyConfiguration(new StudentJobConfiguration());
         modelBuilder.ApplyConfiguration(new StudentPartnerConfiguration());
+        modelBuilder.ApplyConfiguration(new PracticeConfiguration());
 
         modelBuilder.Entity<User>(b =>
         {

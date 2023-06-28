@@ -12,4 +12,5 @@ public interface IPartnerManager
     Task<PartnerViewDTO> GetPartnerProfileByIdAsync(long id);
     Task<PartnerViewDTO> UpdateAsync(PartnerPutDTO partnerDto, string partnerId);
     Task DeleteAsync(long id);
+    Task DeleteAsync(PartnerDeleteDTO partnerDto);
 }

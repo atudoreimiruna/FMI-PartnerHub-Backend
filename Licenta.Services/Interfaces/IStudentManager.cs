@@ -19,4 +19,5 @@ public interface IStudentManager
     Task<List<JobRecommendDTO>> GetRecommendedJobs(string email);
     Task<StudentJobViewDTO> GetStudentJobAsync(long studentId, long jobId);
     Task<PagedList<StudentJobViewDTO>> GetStudentJobsAsync(string email);
+    Task<PagedList<StudentViewDTO>> GetStudentPartnersAsync(long partnerId, string tokenId);
 }

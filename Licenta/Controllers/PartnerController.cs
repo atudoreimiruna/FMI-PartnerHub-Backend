@@ -61,4 +61,12 @@ public class PartnerController : ControllerBase
         await _partnerManager.DeleteAsync(id);
         return Ok("Partner DELETED successfully");
     }
+
+    [HttpDelete]
+    [Authorize(AuthPolicy.SuperAdmin)]
+    public async Task<IActionResult> DeletePartner([FromBody] PartnerDeleteDTO partnerDTO)
+    {
+        await _partnerManager.DeleteAsync(partnerDTO);
+        return Ok("Partner DELETED successfully");
+    }
 }
