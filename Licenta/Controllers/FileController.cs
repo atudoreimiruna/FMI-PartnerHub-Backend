@@ -49,7 +49,7 @@ public class FileController : ControllerBase
         }
         else
         {
-            return File(file.Content, file.ContentType, file.Name);
+            return Ok(file);
         }
     }
 

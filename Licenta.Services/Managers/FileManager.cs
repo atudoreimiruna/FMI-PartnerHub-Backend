@@ -176,15 +176,15 @@ public class FileManager : IFileManager
 
             if (await file.ExistsAsync())
             {
-                var data = await file.OpenReadAsync();
-                Stream blobContent = data;
+                //var data = await file.OpenReadAsync();
+                //Stream blobContent = data;
 
                 var content = await file.DownloadContentAsync();
 
                 string name = blobFilename;
                 string contentType = content.Value.Details.ContentType;
 
-                return new BlobDTO { Content = blobContent, Name = name, ContentType = contentType };
+                return new BlobDTO { Content = content.Value.Content.ToArray(), Name = name, ContentType = contentType };
             }
         }
         catch (RequestFailedException ex)

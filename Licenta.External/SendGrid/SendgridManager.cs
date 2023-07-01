@@ -74,6 +74,7 @@ public class SendgridManager : ISendgridManager
 
         var jobs = await _jobRepository
             .AsQueryable()
+            .Include(x => x.Partner)
             .Where(x => x.CreatedAt <= currentDateTime && x.CreatedAt >= pastDateTime)
             .ToListAsync();
 
