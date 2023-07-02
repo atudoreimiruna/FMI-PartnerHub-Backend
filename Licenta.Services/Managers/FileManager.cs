@@ -176,9 +176,6 @@ public class FileManager : IFileManager
 
             if (await file.ExistsAsync())
             {
-                //var data = await file.OpenReadAsync();
-                //Stream blobContent = data;
-
                 var content = await file.DownloadContentAsync();
 
                 string name = blobFilename;

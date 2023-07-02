@@ -81,21 +81,32 @@ public class JobManager : IJobManager
 
     public async Task<JobViewDTO> UpdateAsync(JobPutDTO jobDto, string partnerId)
     {
-        if (partnerId != null && jobDto.Id == long.Parse(partnerId))
+        var result = await _jobRepository
+            .AsQueryable()
+            .Include(x => x.Partner)
+            .Where(x => x.Id == jobDto.Id)
+            .FirstOrDefaultAsync();
+
+        if (result == null)
         {
-            var job = await _jobRepository.FindByIdAsync(jobDto.Id);
+            throw new CustomNotFoundException("Job Not Found");
+        }
 
-            if (job == null)
-            {
-                throw new CustomNotFoundException("Job Not Found");
-            }
+        if (partnerId != null && result.PartnerId == long.Parse(partnerId))
+        {
+            //var job = await _jobRepository.FindByIdAsync(jobDto.Id);
 
-            _mapper.Map(jobDto, job);
-            if (jobDto.Experience != null) { job.Experience = jobDto.Experience.Value; }
-            if (jobDto.Type != null) { job.Type = jobDto.Type.Value; }
-            if (jobDto.PartnerId != 0) { job.PartnerId = jobDto.PartnerId; }
+            //if (job == null)
+            //{
+            //    throw new CustomNotFoundException("Job Not Found");
+            //}
 
-            await _jobRepository.UpdateAsync(job);
+            _mapper.Map(jobDto, result);
+            if (jobDto.Experience != null) { result.Experience = jobDto.Experience.Value; }
+            if (jobDto.Type != null) { result.Type = jobDto.Type.Value; }
+            if (jobDto.PartnerId != 0) { result.PartnerId = jobDto.PartnerId; }
+
+            await _jobRepository.UpdateAsync(result);
 
             return await GetJobProfileByIdAsync(jobDto.Id);
         }

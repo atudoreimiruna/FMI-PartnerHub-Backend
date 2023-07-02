@@ -12,7 +12,6 @@ using Licenta.External.SendGrid;
 using System.Collections.Generic;
 using Licenta.Services.DTOs.CSV;
 using Licenta.External.CSV;
-using Licenta.External.ML;
 using Licenta.Services.Interfaces.External;
 
 namespace Licenta.Api.Controllers;
