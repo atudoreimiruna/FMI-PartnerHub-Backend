@@ -199,10 +199,10 @@ public class StudentManager : IStudentManager
             .Where(x => x.JobId == jobId && x.StudentId == studentId)
             .FirstOrDefaultAsync();
 
-        if (studentJob == null)
-        {
-            throw new CustomNotFoundException("StudentJob Not Found");
-        }
+        //if (studentJob == null)
+        //{
+        //    throw new CustomNotFoundException("StudentJob Not Found");
+        //}
         return _mapper.Map<StudentJobViewDTO>(studentJob);
     }
 

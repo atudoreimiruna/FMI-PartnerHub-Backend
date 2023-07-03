@@ -11,5 +11,6 @@ public class JobParameters : BaseParameters
     public int? MinExperience { get; set; }
     public int? MaxExperience { get; set; }
     public string PartnerName { get; set; }
+    public long? PartnerId { get; set; }
     public DateTime LastUpdated { get; set; }
 }

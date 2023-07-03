@@ -218,11 +218,16 @@ public class Startup
 
         initialSeed.CreateRoles();
 
-        modelService.RunModelAsync();
+         // modelService.RunModelAsync();
 
         RecurringJob.AddOrUpdate<IHangfireManager>(
             "Run once a month",
             hangfireManager => hangfireManager.SendMonthlyEmail(),
             "0 9 1 * *");
+
+        RecurringJob.AddOrUpdate<IModelService>(
+            "Run once a day",
+            modelService => modelService.RunModelAsync(),
+            "0 1 * * *");
     }
 }

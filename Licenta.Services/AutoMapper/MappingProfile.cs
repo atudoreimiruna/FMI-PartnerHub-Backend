@@ -85,6 +85,7 @@ public class MappingProfile : Profile
         CreateMap<Job, JobViewDTO>()
             .ForMember(dest => dest.PartnerLogo, opt => opt.MapFrom(src => src.Partner.LogoImageUrl))
             .ForMember(dest => dest.PartnerName, opt => opt.MapFrom(src => src.Partner.Name))
+            .ForMember(dest => dest.PartnerId, opt => opt.MapFrom(src => src.Partner.Id))
             .ForMember(dest => dest.JobStudents, opt => opt.MapFrom(src => src.StudentJobs))
             .ReverseMap();
 
@@ -94,6 +95,8 @@ public class MappingProfile : Profile
             .ForMember(opt => opt.Experience, src => src.Ignore())
             .ForMember(opt => opt.Type, src => src.Ignore())
             .ForMember(opt => opt.PartnerId, src => src.Ignore())
+            .ForMember(opt => opt.MinExperience, src => src.Ignore())
+            .ForMember(opt => opt.MaxExperience, src => src.Ignore())
             .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
         CreateMap<StudentJob, JobRecommendDTO>()

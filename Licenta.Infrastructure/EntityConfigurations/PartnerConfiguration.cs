@@ -63,7 +63,7 @@ public class PartnerConfiguration : IEntityTypeConfiguration<Partner>
             .WithOne(cs => cs.Partner)
             .HasForeignKey(cs => cs.PartnerId)
             .IsRequired(false)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasData
         (

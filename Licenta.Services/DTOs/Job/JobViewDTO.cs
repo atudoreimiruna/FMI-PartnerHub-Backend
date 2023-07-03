@@ -20,5 +20,6 @@ public class JobViewDTO : BaseDto
     public bool Activated { get; set; }
     public string PartnerLogo { get; set; }
     public string PartnerName { get; set; }
+    public long PartnerId {  get; set; }
     public List<StudentJobDetailsDTO> JobStudents { get; set; }
 }

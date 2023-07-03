@@ -38,7 +38,7 @@ public class JobConfiguration : IEntityTypeConfiguration<Job>
             .WithOne(cs => cs.Job)
             .HasForeignKey(cs => cs.JobId)
             .IsRequired(false)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasData
         (

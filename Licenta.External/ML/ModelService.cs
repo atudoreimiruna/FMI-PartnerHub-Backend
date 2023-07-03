@@ -72,7 +72,7 @@ public class ModelService : IModelService
         var trainerEstimator = estimator.Append(mlContext.Recommendation().Trainers.MatrixFactorization(options));
 
         //Console.WriteLine("=============== Training the model ===============");
-         //ITransformer model = trainerEstimator.Fit(dataView);
+        //ITransformer model = trainerEstimator.Fit(dataView);
 
         return trainerEstimator;
     }

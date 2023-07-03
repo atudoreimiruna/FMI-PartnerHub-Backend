@@ -33,6 +33,11 @@ public class JobSpecification : Specification<Job>
             AddCriteria(x => x.MinExperience <= parameters.MaxExperience && x.MinExperience >= parameters.MinExperience && x.MaxExperience >= parameters.MinExperience && x.MaxExperience <= parameters.MaxExperience);
         }
 
+        if (parameters.PartnerId != null)
+        {
+            AddCriteria(x => x.Partner.Id == parameters.PartnerId);
+        }
+
         switch (parameters.OrderBy)
         {
             case "Title":

@@ -58,10 +58,6 @@ public class JobManager : IJobManager
             .Where(x => x.PartnerId == partnerId)
             .ToListAsync();
 
-        if (!jobs.Any())
-        {
-            throw new CustomNotFoundException("Jobs Not Found");
-        }
         return _mapper.Map<PagedList<JobViewDTO>>(jobs);
     }
 
@@ -94,17 +90,12 @@ public class JobManager : IJobManager
 
         if (partnerId != null && result.PartnerId == long.Parse(partnerId))
         {
-            //var job = await _jobRepository.FindByIdAsync(jobDto.Id);
-
-            //if (job == null)
-            //{
-            //    throw new CustomNotFoundException("Job Not Found");
-            //}
-
             _mapper.Map(jobDto, result);
             if (jobDto.Experience != null) { result.Experience = jobDto.Experience.Value; }
             if (jobDto.Type != null) { result.Type = jobDto.Type.Value; }
             if (jobDto.PartnerId != 0) { result.PartnerId = jobDto.PartnerId; }
+            if (jobDto.MinExperience != 0) { result.MinExperience = jobDto.MinExperience; }
+            if (jobDto.MaxExperience != 0) { result.MaxExperience = jobDto.MaxExperience; }
 
             await _jobRepository.UpdateAsync(result);
 
