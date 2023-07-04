@@ -68,10 +68,10 @@ public class StudentManager : IStudentManager
             .Where(x => x.Email == email)
             .FirstOrDefaultAsync();
 
-        if (student == null)
-        {
-            throw new CustomNotFoundException("Student Not Found");
-        }
+        //if (student == null)
+        //{
+        //    throw new CustomNotFoundException("Student Not Found");
+        //}
         return _mapper.Map<StudentViewDTO>(student);
     }
 
@@ -263,10 +263,10 @@ public class StudentManager : IStudentManager
             .Where(x => x.Email == email)
             .FirstOrDefaultAsync();
 
-        if (student == null)
-        {
-            throw new CustomNotFoundException("Student Not Found");
-        }
+        //if (student == null)
+        //{
+        //    throw new CustomNotFoundException("Student Not Found");
+        //}
 
         // joburile pe care studentul nu le a evaluat si au rating mai mare de 3
         var bestJobs = await _studentJobRepository
